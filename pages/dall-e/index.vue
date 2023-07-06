@@ -4,6 +4,8 @@ import Textarea from "primevue/textarea";
 import Button from "primevue/button";
 import { PromptDALLEFields } from "~/models/PromptDALLE";
 import { MetaFields } from "~/models";
+import getImgSrc from "~/src/helpers/getImgSrc";
+import GenerationsGallery from "~/src/components/GenerationsGallery/index.vue";
 
 interface GeneratedImage {
     src: string;
@@ -16,8 +18,6 @@ const loadingPreviousGenerations = ref<boolean>(false);
 const images = ref<GeneratedImage[]>([]);
 const imageIndex = ref<number>(0);
 const previousGenerations = ref<(PromptDALLEFields & MetaFields)[]>([]);
-const config = useRuntimeConfig();
-const baseUrlImages = config.public.URL_IMG;
 const handleSubmit: (e: Event) => void = (e) => {
     e.preventDefault();
     loading.value = true;
@@ -84,10 +84,6 @@ const getPreviousGenerations: () => void = () => {
     }
 };
 
-const getImgSrc = (image: string): string => {
-    return image.startsWith("data:") ? image : `${baseUrlImages}/${image}`;
-};
-
 const findPreviousImagesByPrompt = (prompt: string): GeneratedImage[] => {
     return previousGenerations.value
         .filter((p) => p.prompt === prompt)
@@ -111,7 +107,7 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
 
 <template>
     <div class="flex flex-1">
-        <div class="col-6 flex flex-column">
+        <div class="col-12 sm:col-6 flex flex-column">
             <div class="card flex flex-column align-items-center flex-1">
                 <template v-if="images.length > imageIndex">
                     <div>
@@ -158,7 +154,10 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
                 </Button>
             </form>
         </div>
-        <div class="col-6 flex-1 flex" style="max-height: calc(100vh - 5rem);">
+        <div
+            class="col-6 flex-1 hidden sm:flex"
+            style="max-height: calc(100vh - 5rem)"
+        >
             <div
                 class="border-1 border-round surface-border p-2 flex flex-column w-full h-full"
             >
@@ -168,41 +167,12 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
                     Previous generations
                 </h3>
                 <div class="flex-1 overflow-auto">
-                    <div
-                        v-for="item in previousGenerations"
-                        class="flex align-items-start p-3 gap-4 hover:surface-100 cursor-pointer"
-                        @click="
-                            () =>
-                                updatePrompt(item.prompt, getImgSrc(item.image))
-                        "
-                    >
-                        <img
-                            class="shadow-2 block border-round"
-                            :src="getImgSrc(item.image)"
-                            :alt="item.prompt"
-                            width="80"
-                            height="80"
-                            loading="lazy"
-                        />
-                        <div class="flex-1 flex flex-column gap-3">
-                            <div class="text-900">
-                                {{ item.prompt }}
-                            </div>
-                            <div class="flex align-items-center gap-2">
-                                <i class="pi pi-calendar"></i>
-                                <span class="">{{
-                                    new Date(item.createdAt).toLocaleDateString(
-                                        undefined,
-                                        {
-                                            year: "numeric",
-                                            month: "long",
-                                            day: "numeric",
-                                        }
-                                    )
-                                }}</span>
-                            </div>
-                        </div>
-                    </div>
+                    <GenerationsGallery
+                        :imageGenerations="previousGenerations"
+                        :onSelect="(generation: (PromptDALLEFields & MetaFields))=>{
+                        updatePrompt(generation.prompt, getImgSrc(generation.image))
+                    }"
+                    />
                 </div>
             </div>
         </div>

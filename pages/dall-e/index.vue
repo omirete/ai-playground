@@ -2,15 +2,19 @@
 import { ref } from "vue";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
-import Galleria from "primevue/galleria";
-import OrderList from "primevue/orderlist";
 import { PromptDALLEFields } from "~/models/PromptDALLE";
 import { MetaFields } from "~/models";
+
+interface GeneratedImage {
+    src: string;
+    alt: string;
+}
 
 const prompt = ref<string>("");
 const loading = ref<boolean>(false);
 const loadingPreviousGenerations = ref<boolean>(false);
-const images = ref<{ src: string; alt: string }[]>([]);
+const images = ref<GeneratedImage[]>([]);
+const imageIndex = ref<number>(0);
 const previousGenerations = ref<(PromptDALLEFields & MetaFields)[]>([]);
 const config = useRuntimeConfig();
 const baseUrlImages = config.public.URL_IMG;
@@ -28,7 +32,7 @@ const handleSubmit: (e: Event) => void = (e) => {
                     .then(async (res) => {
                         const data = await res.json();
                         images.value = data.images.map((i: string) => ({
-                            src: i,
+                            src: getImgSrc(i),
                             alt: prompt,
                         }));
                         const now = new Date().toISOString();
@@ -79,60 +83,62 @@ const getPreviousGenerations: () => void = () => {
         loadingPreviousGenerations.value = false;
     }
 };
+
+const getImgSrc = (image: string): string => {
+    return image.startsWith("data:") ? image : `${baseUrlImages}/${image}`;
+};
+
+const findPreviousImagesByPrompt = (prompt: string): GeneratedImage[] => {
+    return previousGenerations.value
+        .filter((p) => p.prompt === prompt)
+        .map((p) => ({ src: getImgSrc(p.image), alt: prompt }));
+};
+
 watchEffect(() => {
     getPreviousGenerations();
 });
-const updatePrompt = (newPrompt: string, img?: string) => {
-    console.log("a");
+const updatePrompt = (newPrompt: string, img_src?: string) => {
     prompt.value = newPrompt;
-    console.log("b");
-    if (img) {
-        console.log("c");
-        images.value = [{ src: img, alt: newPrompt }];
+    images.value = findPreviousImagesByPrompt(newPrompt);
+    if (img_src) {
+        imageIndex.value = images.value.findIndex((i) => {
+            return i.src === img_src;
+        });
+        console.log(imageIndex.value);
     }
-    console.log("d");
 };
 </script>
 
 <template>
     <div class="flex flex-1">
         <div class="col-6 flex flex-column">
-            <div class="card md:flex md:justify-content-center flex-1">
-                <Galleria
-                    :value="images"
-                    :numVisible="5"
-                    containerStyle="max-width: 640px"
-                    :responsiveOptions="[
-                        {
-                            breakpoint: '991px',
-                            numVisible: 4,
-                        },
-                        {
-                            breakpoint: '767px',
-                            numVisible: 3,
-                        },
-                        {
-                            breakpoint: '575px',
-                            numVisible: 1,
-                        },
-                    ]"
-                >
-                    <template #item="slotProps">
+            <div class="card flex flex-column align-items-center flex-1">
+                <template v-if="images.length > imageIndex">
+                    <div>
                         <img
-                            :src="slotProps.item.src"
-                            :alt="slotProps.item.alt"
-                            style="width: 100%"
+                            :src="images[imageIndex].src"
+                            :alt="images[imageIndex].alt"
+                            width="300"
+                            height="300"
+                            max-height="40%"
+                            max-width="40%"
+                            class="border-round shadow-2"
                         />
-                    </template>
-                    <template #thumbnail="slotProps">
+                    </div>
+                    <div
+                        class="flex gap-2 mt-2 p-2 border-1 surface-border border-round shadow-2"
+                    >
                         <img
-                            :src="slotProps.item.src"
-                            :alt="slotProps.item.alt"
-                            width="70"
-                            height="70"
+                            v-for="image in images"
+                            :src="image.src"
+                            :alt="image.alt"
+                            width="50"
+                            height="50"
+                            class="cursor-pointer border-round shadow-1"
+                            @click="() => updatePrompt(image.alt, image.src)"
                         />
-                    </template>
-                </Galleria>
+                    </div>
+                </template>
             </div>
             <form @submit="handleSubmit">
                 <Textarea
@@ -152,58 +158,53 @@ const updatePrompt = (newPrompt: string, img?: string) => {
                 </Button>
             </form>
         </div>
-        <div class="col-6 flex flex-column">
-            <OrderList
-                v-model="previousGenerations"
-                dataKey="id"
-                @update:selection="
-                    (p) =>
-                        updatePrompt(
-                            p[0].prompt,
-                            `${baseUrlImages}/${p[0].image}`
-                        )
-                "
-                :listProps="{ style: 'max-height:calc(100vh - 60px - 6rem)' }"
-                :pt="{ controls: { style: 'display:none' } }"
-                
+        <div class="col-6 flex-1 flex" style="max-height: calc(100vh - 5rem);">
+            <div
+                class="border-1 border-round surface-border p-2 flex flex-column w-full h-full"
             >
-                <template #header>Recent generations</template>
-                <template #item="slotProps">
-                    <div class="flex-1">
-                        <div class="flex align-items-start p-4 gap-4">
-                            <img
-                                class="shadow-2 block border-round"
-                                :src="
-                                    slotProps.item.image.startsWith('data:')
-                                        ? slotProps.item.image
-                                        : `${baseUrlImages}/${slotProps.item.image}`
-                                "
-                                :alt="slotProps.item.prompt"
-                                width="80"
-                                height="80"
-                                loading="lazy"
-                            />
-                            <div class="flex-1 flex flex-column gap-3">
-                                <div class="text-900">
-                                    {{ slotProps.item.prompt }}
-                                </div>
-                                <div class="flex align-items-center gap-2">
-                                    <i class="pi pi-calendar"></i>
-                                    <span class="">{{
-                                        new Date(
-                                            slotProps.item.createdAt
-                                        ).toLocaleDateString(undefined, {
+                <h3
+                    class="mt-0 mb-2 mx-0 px-3 py-2 surface-ground border-round"
+                >
+                    Previous generations
+                </h3>
+                <div class="flex-1 overflow-auto">
+                    <div
+                        v-for="item in previousGenerations"
+                        class="flex align-items-start p-3 gap-4 hover:surface-100 cursor-pointer"
+                        @click="
+                            () =>
+                                updatePrompt(item.prompt, getImgSrc(item.image))
+                        "
+                    >
+                        <img
+                            class="shadow-2 block border-round"
+                            :src="getImgSrc(item.image)"
+                            :alt="item.prompt"
+                            width="80"
+                            height="80"
+                            loading="lazy"
+                        />
+                        <div class="flex-1 flex flex-column gap-3">
+                            <div class="text-900">
+                                {{ item.prompt }}
+                            </div>
+                            <div class="flex align-items-center gap-2">
+                                <i class="pi pi-calendar"></i>
+                                <span class="">{{
+                                    new Date(item.createdAt).toLocaleDateString(
+                                        undefined,
+                                        {
                                             year: "numeric",
                                             month: "long",
                                             day: "numeric",
-                                        })
-                                    }}</span>
-                                </div>
+                                        }
+                                    )
+                                }}</span>
                             </div>
                         </div>
                     </div>
-                </template>
-            </OrderList>
+                </div>
+            </div>
         </div>
     </div>
 </template>

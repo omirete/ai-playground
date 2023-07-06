@@ -17,8 +17,8 @@ const items: MenuItem[] = [
 
 <template>
     <div class="min-h-screen max-h-screen flex flex-column">
-        <TabMenu :model="items" />
-        <div class="px-3 py-2 flex-1 flex flex-column">
+        <TabMenu :model="items" class="block" style="min-height: 4rem" />
+        <div class="px-3 py-2">
             <NuxtPage />
         </div>
     </div>

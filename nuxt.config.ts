@@ -19,4 +19,19 @@ export default defineNuxtConfig({
             URL_IMG: process.env.URL_IMG,
         },
     },
+    app: {
+        head: {
+            link: [
+                { rel: "manifest", href: "manifest.json" },
+                { rel: "icon", type: "image/jpeg", href: "favicon.jpeg" },
+            ],
+            title: "AI Playground",
+            meta: [
+                {
+                    name: "description",
+                    content: "A space to play around with AI tools.",
+                },
+            ],
+        },
+    },
 });

@@ -1,0 +1,40 @@
+{
+    "name": "AI Playground",
+    "short_name": "AI Playground",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "description": "A space to play around with AI tools.",
+    "icons": [
+        {
+            "src": "logo_48.jpeg",
+            "sizes": "48x48",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "logo_72.jpeg",
+            "sizes": "72x72",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "logo_96.jpeg",
+            "sizes": "96x96",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "logo_144.jpeg",
+            "sizes": "144x144",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "logo_168.jpeg",
+            "sizes": "168x168",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "logo_192.jpeg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        }
+    ]
+}

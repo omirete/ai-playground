@@ -100,7 +100,6 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
         imageIndex.value = images.value.findIndex((i) => {
             return i.src === img_src;
         });
-        console.log(imageIndex.value);
     }
 };
 </script>
@@ -108,29 +107,29 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
 <template>
     <div class="flex flex-1">
         <div class="col-12 sm:col-6 flex flex-column">
-            <div class="card flex flex-column align-items-center flex-1">
+            <div class="flex gap-2 flex-column align-items-center flex-1 w-full">
                 <template v-if="images.length > imageIndex">
                     <div>
                         <img
                             :src="images[imageIndex].src"
                             :alt="images[imageIndex].alt"
-                            width="300"
-                            height="300"
-                            max-height="40%"
-                            max-width="40%"
+                            style="max-height: 40vh;max-width: 80vw;"
                             class="border-round shadow-2"
                         />
                     </div>
                     <div
-                        class="flex gap-2 mt-2 p-2 border-1 surface-border border-round shadow-2"
+                        :class="`
+                            flex flex-wrap gap-2
+                            border-1 surface-border border-round
+                            shadow-2 p-2
+                        `"
                     >
                         <img
                             v-for="image in images"
                             :src="image.src"
                             :alt="image.alt"
-                            width="50"
-                            height="50"
-                            class="cursor-pointer border-round shadow-1"
+                            style="max-height:60px;max-width:60px;"
+                            class="cursor-pointer border-round shadow-1 p-0"
                             @click="() => updatePrompt(image.alt, image.src)"
                         />
                     </div>

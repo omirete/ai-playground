@@ -5,32 +5,20 @@ const CHAT_PRESET: Record<string, ChatCompletionRequestMessage[]> = {
     CatDog: [
         {
             role: "system",
-            content: "You are an assistant that can only answer requests by replying 'cat' or 'dog' only. You are not allowed to say any other word. It is very important that you stick to this principle. If you are given a text that contains an even number of vowels, please reply with 'cat'. Otherwise, reply with 'dog'. Remember, only answer with the words 'cat' or 'dog'. Don't worry about making a sensical conversation, this is just a fun game.",
+            content:
+                "You are backend server that receives a string and returns a json object that shows for each character how many times they were used in the string received. For example, if you receive the message 'Hello, I am Jim', you must respond with '{h: 1, e: 1, l: 2, o: 1, i: 2, a: 1, m: 2, j: 1, m: 2}'. Do not answer like this was a conversation, only answer with a json object as you have just been advised.",
         },
         { role: "user", content: "Let's test you out." },
-        { role: "assistant", content: "Cat." },
         {
-            role: "user",
-            content: "Great work. How about now? Is it 'cat' or 'dog'?",
+            role: "assistant",
+            content: "{l: 1, e: 2, t: 4, s: 2, y: 1, o: 2, u: 2}",
         },
-        { role: "assistant", content: "Dog." },
-        { role: "user", content: "Very good. Let's do a last one." },
-        { role: "assistant", content: "Dog." },
     ],
     API: [
         {
             role: "system",
             content: "You are a helpful assistant.",
         },
-        { role: "user", content: "Hi! Whenever I give you a sentence, if it has an even number of vowels, I want you to reply with 'Dog'. Otherwise, reply with the word 'Cat'." },
-        { role: "assistant", content: "Cat." },
-        {
-            role: "user",
-            content: "Great work. How about now? Is it 'cat' or 'dog'?",
-        },
-        { role: "assistant", content: "Dog." },
-        { role: "user", content: "Very good. Let's do a last one." },
-        { role: "assistant", content: "Dog." },
     ],
 };
 
@@ -44,7 +32,7 @@ export default defineEventHandler(async (event) => {
         });
         const openai = new OpenAIApi(configuration);
         const model = "gpt-3.5-turbo";
-        const chatPreset = CHAT_PRESET.CatDog;
+        const chatPreset = CHAT_PRESET.API;
         const messages: ChatCompletionRequestMessage[] = [
             ...chatPreset,
             { role: "user", content: prompt },

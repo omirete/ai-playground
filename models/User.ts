@@ -5,21 +5,27 @@ import { MetaFields } from ".";
 export interface UserFields {
     email: string;
     name: string;
+    pwdHash: string;
 }
 
 class User extends Model<UserFields & MetaFields, UserFields> {}
 User.init(
     {
         id: {
-            type: DataTypes.STRING,
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
-            allowNull: false,
         },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
         },
         name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        pwdHash: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -33,13 +39,10 @@ User.init(
         },
     },
     {
-        // Other model options go here
-        sequelize, // We need to pass the connection instance
-        modelName: "User", // We need to choose the model name
+        sequelize,
+        modelName: "User",
         tableName: "Users",
     }
 );
-User.create().then((u) => {
-    u.dataValues;
-});
+
 export default User;

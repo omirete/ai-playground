@@ -5,6 +5,7 @@ import { MetaFields } from ".";
 export interface PromptDALLEFields {
     prompt: string;
     image: string;
+    userId: string;
 }
 
 class PromptDALLE extends Model<
@@ -35,14 +36,14 @@ PromptDALLE.init(
             type: DataTypes.DATE,
             allowNull: false,
         },
-        // userId: {
-        //     type: DataTypes.UUID,
-        //     allowNull: false,
-        //     references: {
-        //         model: "Users",
-        //         key: "id",
-        //     },
-        // },
+        userId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: "Users",
+                key: "id",
+            },
+        },
     },
     {
         sequelize,

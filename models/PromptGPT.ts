@@ -7,6 +7,7 @@ export interface PromptGPTFields {
     model: string;
     systemPrompt?: string;
     answer: string;
+    userId: string;
 }
 
 class PromptGPT extends Model<PromptGPTFields & MetaFields, PromptGPTFields> {}
@@ -41,14 +42,14 @@ PromptGPT.init(
             type: DataTypes.DATE,
             allowNull: false,
         },
-        // userId: {
-        //     type: DataTypes.UUID,
-        //     allowNull: false,
-        //     references: {
-        //         model: "Users",
-        //         key: "id",
-        //     },
-        // },
+        userId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+            references: {
+                model: "Users",
+                key: "id",
+            },
+        },
     },
     {
         sequelize,

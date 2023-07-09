@@ -43,8 +43,8 @@ const handleSubmit = (e: Event) => {
 </script>
 
 <template>
-    <div class="flex">
-        <form @submit="handleSubmit" class="col-6">
+    <div class="flex flex-wrap">
+        <form @submit="handleSubmit" class="col-12 sm:col-6">
             <Textarea
                 name="prompt"
                 v-model="prompt"
@@ -56,7 +56,7 @@ const handleSubmit = (e: Event) => {
                 {{ !loading ? "Submit" : "Submitting..." }}
             </Button>
         </form>
-        <div v-if="answer !== ''" class="col-6">
+        <div v-if="answer !== ''" class="col-12 sm:col-6">
             <h3>Answer:</h3>
             <p>{{ answer }}</p>
         </div>

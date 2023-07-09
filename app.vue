@@ -13,7 +13,7 @@ import Navbar from "~/src/components/ui/Navbar/index.vue";
     <UserContextProvider>
         <div class="min-h-screen max-h-screen flex flex-column">
             <Navbar />
-            <div class="px-3 py-2">
+            <div class="px-3 py-2 flex-1 flex flex-column">
                 <NuxtPage />
             </div>
         </div>

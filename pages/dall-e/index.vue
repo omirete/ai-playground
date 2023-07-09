@@ -118,9 +118,26 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
 <template>
     <PrivateSection>
         <div class="flex flex-1">
-            <div class="col-12 sm:col-6 flex flex-column">
+            <div class="col-12 sm:col-6 flex flex-column flex-1 gap-2">
+                <form @submit="handleSubmit">
+                    <Textarea
+                        name="prompt"
+                        v-model="prompt"
+                        rows="4"
+                        placeholder="Your prompt"
+                        class="block w-full"
+                        required
+                    />
+                    <Button
+                        type="submit"
+                        :disabled="loading"
+                        class="block mt-2 w-full"
+                    >
+                        {{ !loading ? "Submit" : "Submitting..." }}
+                    </Button>
+                </form>
                 <div
-                    class="flex gap-2 flex-column align-items-center flex-1 w-full"
+                    class="flex gap-2 flex-column align-items-center justify-content-center flex-1 w-full"
                 >
                     <template v-if="images.length > imageIndex">
                         <div>
@@ -151,23 +168,6 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
                         </div>
                     </template>
                 </div>
-                <form @submit="handleSubmit">
-                    <Textarea
-                        name="prompt"
-                        v-model="prompt"
-                        rows="4"
-                        placeholder="Your prompt"
-                        class="block w-full"
-                        required
-                    />
-                    <Button
-                        type="submit"
-                        :disabled="loading"
-                        class="block mt-2 w-full"
-                    >
-                        {{ !loading ? "Submit" : "Submitting..." }}
-                    </Button>
-                </form>
             </div>
             <div
                 class="col-6 flex-1 hidden sm:flex"

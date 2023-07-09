@@ -2,7 +2,8 @@ import { readFileSync } from "fs";
 import jwt from "jsonwebtoken";
 
 export const verifyAndDecodeToken = (token) => {
-    const pubkey = readFileSync("public.pem");
+    const config = useRuntimeConfig();
+    const pubkey = config.public.publicKey;
     const decodedToken = jwt.verify(token, pubkey, {
         ignoreExpiration: false,
         algorithms: ["RS256"],
@@ -11,8 +12,9 @@ export const verifyAndDecodeToken = (token) => {
 };
 
 export const generateToken = (user) => {
+    const config = useRuntimeConfig();
     // sign with RSA SHA256
-    const privateKey = readFileSync("private.key");
+    const privateKey = config.privateKey;
     const token = jwt.sign(
         {
             data: {

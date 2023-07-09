@@ -1,4 +1,3 @@
-import { readFileSync } from "fs";
 import jwt from "jsonwebtoken";
 
 export const verifyAndDecodeToken = (token) => {

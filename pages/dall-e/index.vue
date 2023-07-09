@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
+import Sidebar from "primevue/sidebar";
 import getImgSrc from "~/src/helpers/getImgSrc";
 import GenerationsGallery, {
     Generation,
@@ -18,6 +19,13 @@ const loading = ref<boolean>(false);
 const loadingPreviousGenerations = ref<boolean>(false);
 const images = ref<GeneratedImage[]>([]);
 const imageIndex = ref<number>(0);
+const showPreviousGenerations = ref<boolean>(false);
+const togglePreviousGenerations = () => {
+    showPreviousGenerations.value = !showPreviousGenerations.value;
+};
+const hidePreviousGenerations = () => {
+    showPreviousGenerations.value = false;
+};
 const previousGenerations = ref<Generation[]>([]);
 const handleSubmit: (e: Event) => void = (e) => {
     e.preventDefault();
@@ -117,7 +125,7 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
 
 <template>
     <PrivateSection>
-        <div class="flex flex-1">
+        <div class="flex flex-1 flex-column sm:flex-row">
             <div class="col-12 sm:col-6 flex flex-column flex-1 gap-2">
                 <form @submit="handleSubmit">
                     <Textarea
@@ -137,7 +145,7 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
                     </Button>
                 </form>
                 <div
-                    class="flex gap-2 flex-column align-items-center justify-content-center flex-1 w-full"
+                    class="flex gap-2 flex-column align-items-center flex-1 w-full"
                 >
                     <template v-if="images.length > imageIndex">
                         <div>
@@ -185,12 +193,30 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
                         <GenerationsGallery
                             :imageGenerations="previousGenerations"
                             :onSelect="(generation: Generation)=>{
-                            updatePrompt(generation.prompt, getImgSrc(generation.image))
-                        }"
+                                updatePrompt(generation.prompt, getImgSrc(generation.image))
+                            }"
                         />
                     </div>
                 </div>
             </div>
+            <Button
+                severity="warning"
+                @click="togglePreviousGenerations"
+                class="sm:hidden"
+                >See previous generations</Button
+            >
+            <Sidebar v-model:visible="showPreviousGenerations">
+                <template #header>
+                    <h3 class="mr-auto">Previous generations</h3>
+                </template>
+                <GenerationsGallery
+                    :imageGenerations="previousGenerations"
+                    :onSelect="(generation: Generation)=>{
+                        updatePrompt(generation.prompt, getImgSrc(generation.image));
+                        hidePreviousGenerations();
+                    }"
+                />
+            </Sidebar>
         </div>
     </PrivateSection>
 </template>

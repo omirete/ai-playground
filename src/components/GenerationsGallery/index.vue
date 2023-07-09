@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { PromptDALLEFields } from "../../../models/PromptDALLE";
-import { MetaFields } from "../../../models";
-import getImgSrc from "../../helpers/getImgSrc";
+import { PromptDALLEFields } from "~/models/PromptDALLE";
+import { MetaFields } from "~/models";
+import getImgSrc from "~/src/helpers/getImgSrc";
+
+export type Generation = Omit<PromptDALLEFields & MetaFields, "userId">;
+
 const { imageGenerations, onSelect } = defineProps<{
-    imageGenerations: (PromptDALLEFields & MetaFields)[];
-    onSelect: (generation: PromptDALLEFields & MetaFields) => void;
+    imageGenerations: Generation[];
+    onSelect: (generation: Generation) => void;
 }>();
 </script>
 

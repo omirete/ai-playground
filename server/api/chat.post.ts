@@ -1,5 +1,7 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-import PromptGPT from "../../models/PromptGPT";
+import PromptGPT from "~/models/PromptGPT";
+import authenticateRequest from "~/server/helpers/authenticateRequest";
+import { authErrorUnauthorized } from "~/server/errors";
 
 const CHAT_PRESET: Record<string, ChatCompletionRequestMessage[]> = {
     CatDog: [
@@ -23,41 +25,47 @@ const CHAT_PRESET: Record<string, ChatCompletionRequestMessage[]> = {
 };
 
 export default defineEventHandler(async (event) => {
-    const query = getQuery(event);
-    const prompt = query.prompt?.toString();
-    if (prompt) {
-        const configuration = new Configuration({
-            organization: process.env.OPENAI_ORG_ID,
-            apiKey: process.env.OPENAI_API_SECRET,
-        });
-        const openai = new OpenAIApi(configuration);
-        const model = "gpt-3.5-turbo";
-        const chatPreset = CHAT_PRESET.API;
-        const messages: ChatCompletionRequestMessage[] = [
-            ...chatPreset,
-            { role: "user", content: prompt },
-        ];
-        const response = await openai.createChatCompletion({
-            model,
-            messages,
-            temperature: 0.2,
-        });
-        const answer = response.data.choices[0].message;
-        if (answer?.content) {
-            await PromptGPT.create({
-                prompt,
-                model,
-                systemPrompt: chatPreset[0].content,
-                answer: answer?.content,
+    const user = authenticateRequest(getHeader(event, "Authorization"));
+    if (user) {
+        const query = getQuery(event);
+        const prompt = query.prompt?.toString();
+        if (prompt) {
+            const configuration = new Configuration({
+                organization: process.env.OPENAI_ORG_ID,
+                apiKey: process.env.OPENAI_API_SECRET,
             });
+            const openai = new OpenAIApi(configuration);
+            const model = "gpt-3.5-turbo";
+            const chatPreset = CHAT_PRESET.API;
+            const messages: ChatCompletionRequestMessage[] = [
+                ...chatPreset,
+                { role: "user", content: prompt },
+            ];
+            const response = await openai.createChatCompletion({
+                model,
+                messages,
+                temperature: 0.2,
+            });
+            const answer = response.data.choices[0].message;
+            if (answer?.content) {
+                await PromptGPT.create({
+                    userId: user.id,
+                    prompt,
+                    model,
+                    systemPrompt: chatPreset[0].content,
+                    answer: answer?.content,
+                });
+            }
+            return {
+                data: response.data,
+                answer,
+                status: response.status,
+                text: response.statusText,
+            };
+        } else {
+            return { error: "Missing prompt param." };
         }
-        return {
-            data: response.data,
-            answer,
-            status: response.status,
-            text: response.statusText,
-        };
     } else {
-        return { error: "Missing prompt param." };
+        return authErrorUnauthorized
     }
 });

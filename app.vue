@@ -5,23 +5,19 @@ import "primeicons/primeicons.css";
 import "primevue/resources/themes/lara-light-indigo/theme.css";
 import "primevue/resources/primevue.min.css";
 
-import { MenuItem } from "primevue/menuitem";
-import TabMenu from "primevue/tabmenu";
-import { PrimeIcons } from "primevue/api";
-
-const items: MenuItem[] = [
-    { label: "GPT3.5turbo", to: "/", icon: PrimeIcons.COMMENT },
-    { label: "DALL-E", to: "/dall-e", icon: PrimeIcons.IMAGE },
-];
+import UserContextProvider from "~/src/components/UserContextProvider/index.vue";
+import Navbar from "~/src/components/ui/Navbar/index.vue";
 </script>
 
 <template>
-    <div class="min-h-screen max-h-screen flex flex-column">
-        <TabMenu :model="items" class="block" style="min-height: 4rem" />
-        <div class="px-3 py-2">
-            <NuxtPage />
+    <UserContextProvider>
+        <div class="min-h-screen max-h-screen flex flex-column">
+            <Navbar />
+            <div class="px-3 py-2">
+                <NuxtPage />
+            </div>
         </div>
-    </div>
+    </UserContextProvider>
 </template>
 
 <style>

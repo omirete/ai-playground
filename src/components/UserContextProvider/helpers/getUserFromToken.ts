@@ -17,14 +17,18 @@ const getUserFromToken = (token: string | null): UserType | undefined => {
                     .join("")
             );
             const payloadObj = JSON.parse(jsonPayload);
-            const user: UserType = {
-                id: payloadObj.data.user.id,
-                name: payloadObj.data.user.email,
-                email: payloadObj.data.user.email,
-                createdAt: payloadObj.data.user.createdAt,
-                updatedAt: payloadObj.data.user.updatedAt,
-            };
-            return user;
+            const expirationDate = new Date(payloadObj.exp * 1000);
+            if (expirationDate.toISOString() > new Date().toISOString()) {
+                const user: UserType = {
+                    id: payloadObj.data.user.id,
+                    name: payloadObj.data.user.email,
+                    email: payloadObj.data.user.email,
+                    createdAt: payloadObj.data.user.createdAt,
+                    updatedAt: payloadObj.data.user.updatedAt,
+                };
+                return user;
+            }
+            return undefined;
         } catch (error) {
             console.error(error);
             return undefined;

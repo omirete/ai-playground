@@ -88,7 +88,9 @@ const getPreviousGenerations: () => void = () => {
         })
             .then(async (res) => {
                 const data = await res.json();
-                previousGenerations.value = (data.prompts as Generation[]).sort(
+                previousGenerations.value = (
+                    data.prompts as Generation[]
+                )?.sort(
                     (a, b) =>
                         new Date(b.createdAt).valueOf() -
                         new Date(a.createdAt).valueOf()

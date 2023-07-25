@@ -19,7 +19,7 @@ PromptGPT.init(
             primaryKey: true,
         },
         prompt: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         model: {
@@ -27,11 +27,11 @@ PromptGPT.init(
             allowNull: false,
         },
         systemPrompt: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: true,
         },
         answer: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         createdAt: {

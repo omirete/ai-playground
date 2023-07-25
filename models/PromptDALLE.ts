@@ -20,7 +20,7 @@ PromptDALLE.init(
             primaryKey: true,
         },
         prompt: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(1024),
             allowNull: false,
         },
         image: {

@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import PromptDALLE from "~/models/PromptDALLE";
-import { dataUrlToFile, uploadBlob } from "~/src/helpers/fileStorage/webdav";
+import { dataUrlToFile, uploadBlob } from "~/src/helpers/fileStorage";
 import { randomUUID } from "crypto";
 import authenticateRequest from "~/server/helpers/authenticateRequest";
 import { authErrorUnauthorized } from "~/server/errors";
@@ -29,21 +29,24 @@ export default defineEventHandler(async (event) => {
                 const filename = `${randomUUID()}.jpg`;
                 const img = dataUrlToFile(src, filename);
                 if (img) {
-                    uploadBlob(img, "generated-images", filename, false).then(
-                        async (success) => {
-                            if (success) {
-                                await PromptDALLE.create({
-                                    userId: user.id,
-                                    prompt,
-                                    image: filename,
-                                })
-                            } else {
-                                console.error(
-                                    "Could not upload img to filestorage."
-                                );
-                            }
+                    uploadBlob(
+                        img,
+                        `${process.env.SFTP_BASE_DIR ?? ""}generated-images`,
+                        filename,
+                        false
+                    ).then(async (success) => {
+                        if (success) {
+                            await PromptDALLE.create({
+                                userId: user.id,
+                                prompt,
+                                image: filename,
+                            });
+                        } else {
+                            console.error(
+                                "Could not upload img to filestorage."
+                            );
                         }
-                    );
+                    });
                 } else {
                     console.error(
                         "Could not generate an image file to store it."

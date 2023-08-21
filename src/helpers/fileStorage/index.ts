@@ -1,10 +1,4 @@
-import { createClient, FileStat } from "webdav";
-
-export interface FileUploadInfo {
-    blob: Blob;
-    directory: string;
-    filename: string;
-}
+import Client, { FileInfo } from "ssh2-sftp-client";
 
 export const uploadBlob = async (
     blob: Blob,
@@ -12,78 +6,55 @@ export const uploadBlob = async (
     filename: string,
     overwrite: boolean = false
 ): Promise<boolean> => {
-    const client = createClient(process.env.WEBDAV_HOST as string, {
-        username: process.env.WEBDAV_USR,
-        password: process.env.WEBDAV_PWD,
+    const sftp = new Client();
+    const conn = await sftp.connect({
+        host: process.env.SSH_HOST,
+        port: parseInt(process.env.SSH_PORT ?? "22"),
+        username: process.env.SSH_USR,
+        password: process.env.SSH_PWD,
     });
     try {
-        await client.createDirectory(directory, { recursive: true });
+        await sftp.mkdir(directory, true);
         let filepath = directory;
         if (!directory.endsWith("/")) {
             filepath += "/";
         }
         filepath += filename;
-        const result = await client.putFileContents(
-            filepath,
+        const result = await sftp.put(
             Buffer.from(await blob.arrayBuffer()),
-            {
-                overwrite,
-            }
+            filepath
         );
-        return result;
+        return true; // check
     } catch (err) {
         console.error(err);
         return false;
+    } finally {
+        conn.end();
+        await sftp.end();
     }
 };
-
-// export const uploadBlobs = async (
-//     files: FileUploadInfo[],
-//     overwrite: boolean = false
-// ): Promise<boolean> => {
-//     const client = createClient(process.env.WEBDAV_HOST as string, {
-//         username: process.env.WEBDAV_USR,
-//         password: process.env.WEBDAV_PWD,
-//     });
-//     try {
-//         await client.createDirectory(directory, { recursive: true });
-//         let filepath = directory;
-//         if (!directory.endsWith("/")) {
-//             filepath += "/";
-//         }
-//         filepath += filename;
-//         const result = await client.putFileContents(
-//             filepath,
-//             Buffer.from(await blob.arrayBuffer()),
-//             {
-//                 overwrite,
-//             }
-//         );
-//         return result;
-//     } catch (err) {
-//         console.error(err);
-//         return false;
-//     }
-// };
 
 export const getFiles = async (
     directory: string,
     recursive: boolean = false
-): Promise<FileStat[] | false> => {
-    const client = createClient(process.env.WEBDAV_HOST as string, {
-        username: process.env.WEBDAV_USR,
-        password: process.env.WEBDAV_PWD,
+): Promise<FileInfo[] | false> => {
+    const sftp = new Client();
+
+    const conn = await sftp.connect({
+        host: process.env.SSH_HOST,
+        port: parseInt(process.env.SSH_PORT ?? "22"),
+        username: process.env.SSH_USR,
+        password: process.env.SSH_PWD,
     });
+
     try {
-        let files = (await client.getDirectoryContents(
-            directory
-        )) as FileStat[];
+        let files = await sftp.list(directory);
 
         let relevantFiles = await Promise.all(
             files.map(async (file) => {
-                if (file.type === "directory" && recursive) {
+                if (file.type === "d" && recursive) {
                     let recursiveFiles = await getFiles(
-                        `${directory}${file.basename}/`,
+                        `${directory}${file.name}/`,
                         true
                     );
                     if (recursiveFiles !== false) {
@@ -100,6 +71,9 @@ export const getFiles = async (
     } catch (err) {
         console.error(err);
         return false;
+    } finally {
+        conn.end();
+        await sftp.end();
     }
 };
 

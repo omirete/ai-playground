@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import InputText from "primevue/inputtext";
-import Button from "primevue/button";
+import InlineMessage from "primevue/inlinemessage";
 import updateToken from "~/src/helpers/token/updateToken";
+import SubmitButton from "~/src/components/ui/SubmitButton/index.vue";
 const router = useRouter();
+
+const loading = ref<boolean>(false);
+const loginError = ref<string | undefined>(undefined);
+
 const submitHandler = (e: Event): void => {
     e.preventDefault();
     const form = e.target;
     if (form) {
+        loading.value = true;
         const formData = new FormData(form as HTMLFormElement);
         const email = formData.get("email")?.toString();
         const password = formData.get("password")?.toString();
@@ -24,12 +30,17 @@ const submitHandler = (e: Event): void => {
                         updateToken(token);
                         router.push("/");
                     } else {
-                        alert(await res.text());
+                        loginError.value = (await res.json()).text;
                     }
                 })
                 .catch((error) => {
                     console.error(error);
+                })
+                .finally(() => {
+                    loading.value = false;
                 });
+        } else {
+            loading.value = false;
         }
     }
 };
@@ -65,7 +76,10 @@ const submitHandler = (e: Event): void => {
                     placeholder="Password"
                 />
             </div>
-            <Button type="submit">Login</Button>
+            <SubmitButton :loading="loading" text="Login" />
+            <InlineMessage v-if="loginError !== undefined" severity="error">
+                {{ loginError }}
+            </InlineMessage>
         </form>
     </div>
 </template>

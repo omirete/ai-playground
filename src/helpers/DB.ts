@@ -1,13 +1,22 @@
-import { Sequelize } from "sequelize";
-import mysql2 from 'mysql2';
+import { Dialect, Options, Sequelize } from "sequelize";
+import mysql2 from "mysql2";
 
-export const sequelize = new Sequelize(
-    process.env.DB_NAME as string,
-    process.env.DB_USER as string,
-    process.env.DB_PWD as string,
-    {
-        host: process.env.DB_HOST as string,
-        dialect: "mysql",
-        dialectModule: mysql2
-    }
-);
+export const sequelizeOpts: Options = {
+    username: process.env.DB_USR,
+    password: process.env.DB_PWD,
+    database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT ?? ""),
+    dialect: process.env.DB_DIALECT as Dialect,
+    dialectModule: mysql2,
+    ssl: true,
+    dialectOptions: {
+        ssl: {
+            key: (process.env.DB_PRIVATE_KEY as string).replaceAll("\\n", "\n"),
+            cert: (process.env.DB_PUBLIC_KEY as string).replaceAll("\\n", "\n"),
+            ca: (process.env.DB_PUBLIC_KEY as string).replaceAll("\\n", "\n"),
+        },
+    },
+};
+
+export const sequelize = new Sequelize(sequelizeOpts as Options);

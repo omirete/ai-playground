@@ -1,20 +1,19 @@
 import { hashSync } from "bcrypt";
 import { validatePassword } from "~/src/helpers/password";
 import User from "~/models/User";
+import responseWithStatus from "../../helpers/responseWithStatus";
+import { authErrorMissingCredentials } from "../../errors";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     if (!body.email || !body.password || !body.name) {
-        return {
-            status: 400,
-            text: "Missing email, password or name.",
-        };
+        return responseWithStatus(event, authErrorMissingCredentials);
     }
     if (!validatePassword(body.password)) {
-        return {
+        return responseWithStatus(event, {
             status: 400,
             text: "Password not strong enough.",
-        };
+        });
     }
 
     const saltRounds = 10;
@@ -29,13 +28,13 @@ export default defineEventHandler(async (event) => {
         // Cannot create account because email is already registered, but we
         // cannot disclose this info, so we pretend like the user was created
         // successfully.
-        return {
+        return responseWithStatus(event, {
             status: 201,
             text: "User created successfully.",
-        };
+        });
     }
-    return {
+    return responseWithStatus(event, {
         status: 201,
         text: "User created successfully.",
-    };
+    });
 });

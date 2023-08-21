@@ -5,26 +5,24 @@ import {
     authErrorIncorrectCredentials,
     authErrorMissingCredentials,
 } from "~/server/errors";
+import responseWithStatus from "../../helpers/responseWithStatus";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     if (!body.email || !body.password) {
-        return authErrorMissingCredentials;
+        return responseWithStatus(event, authErrorMissingCredentials);
     }
     const user = await User.findOne({ where: { email: body.email } });
     if (user === null) {
-        return authErrorIncorrectCredentials;
+        return responseWithStatus(event, authErrorIncorrectCredentials);
     }
 
     const pwdOk = compareSync(body.password, user.dataValues.pwdHash);
     const token = generateToken(user);
 
     if (pwdOk) {
-        return {
-            status: 200,
-            token: token,
-        };
+        return responseWithStatus(event, { status: 200, token: token });
     } else {
-        return authErrorIncorrectCredentials;
+        return responseWithStatus(event, authErrorIncorrectCredentials);
     }
 });

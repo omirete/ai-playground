@@ -3,6 +3,7 @@ import PromptDALLE from "~/models/PromptDALLE";
 import { dataUrlToFile, uploadBlob } from "~/src/helpers/fileStorage";
 import { randomUUID } from "crypto";
 import authenticateRequest from "~/server/helpers/authenticateRequest";
+import responseWithStatus from "~/server/helpers/responseWithStatus";
 import { authErrorUnauthorized } from "~/server/errors";
 
 export default defineEventHandler(async (event) => {
@@ -53,16 +54,19 @@ export default defineEventHandler(async (event) => {
                     );
                 }
             });
-            return {
+            return responseWithStatus(event, {
                 data: response.data,
                 images: img_src,
                 status: response.status,
                 text: response.statusText,
-            };
+            });
         } else {
-            return { error: "Missing prompt param." };
+            return responseWithStatus(event, {
+                status: 400,
+                error: "Missing prompt param.",
+            });
         }
     } else {
-        return authErrorUnauthorized;
+        return responseWithStatus(event, authErrorUnauthorized);
     }
 });

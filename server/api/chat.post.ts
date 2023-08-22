@@ -1,6 +1,7 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import PromptGPT from "~/models/PromptGPT";
 import authenticateRequest from "~/server/helpers/authenticateRequest";
+import responseWithStatus from "~/server/helpers/responseWithStatus";
 import { authErrorUnauthorized } from "~/server/errors";
 
 const CHAT_PRESET: Record<string, ChatCompletionRequestMessage[]> = {
@@ -56,16 +57,19 @@ export default defineEventHandler(async (event) => {
                     answer: answer?.content,
                 });
             }
-            return {
+            return responseWithStatus(event, {
                 data: response.data,
                 answer,
                 status: response.status,
                 text: response.statusText,
-            };
+            });
         } else {
-            return { error: "Missing prompt param." };
+            return responseWithStatus(event, {
+                status: 400,
+                error: "Missing prompt param.",
+            });
         }
     } else {
-        return authErrorUnauthorized
+        return responseWithStatus(event, authErrorUnauthorized);
     }
 });

@@ -1,5 +1,6 @@
 import PromptGPT from "~/models/PromptGPT";
 import authenticateRequest from "~/server/helpers/authenticateRequest";
+import responseWithStatus from "~/server/helpers/responseWithStatus";
 import { authErrorUnauthorized } from "~/server/errors";
 
 export default defineEventHandler(async (event) => {
@@ -8,10 +9,11 @@ export default defineEventHandler(async (event) => {
         const promptsGPT = await PromptGPT.findAll({
             where: { userId: user.id },
         });
-        return {
+        return responseWithStatus(event, {
+            status: 200,
             prompts: promptsGPT.map((p) => p.dataValues),
-        };
+        });
     } else {
-        return authErrorUnauthorized;
+        return responseWithStatus(event, authErrorUnauthorized);
     }
 });

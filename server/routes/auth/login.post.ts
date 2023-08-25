@@ -5,7 +5,7 @@ import {
     authErrorIncorrectCredentials,
     authErrorMissingCredentials,
 } from "~/server/errors";
-import responseWithStatus from "../../helpers/responseWithStatus";
+import responseWithStatus from "~/server/helpers/responseWithStatus";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);

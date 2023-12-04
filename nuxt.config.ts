@@ -13,12 +13,15 @@ export default defineNuxtConfig({
     runtimeConfig: {
         // Private keys are only available on the server
         // apiSecret: '123',
-        privateKey: (process.env.PRIVATE_KEY as string ?? '').replaceAll("\\n", "\n"),
+        privateKey: ((process.env.PRIVATE_KEY as string) ?? "").replaceAll(
+            "\\n",
+            "\n"
+        ),
 
         // Public keys that are exposed to the client
         public: {
             URL_IMG: process.env.URL_IMG,
-            publicKey: (process.env.PUBLIC_KEY as string ?? '').replaceAll(
+            publicKey: ((process.env.PUBLIC_KEY as string) ?? "").replaceAll(
                 "\\n",
                 "\n"
             ),

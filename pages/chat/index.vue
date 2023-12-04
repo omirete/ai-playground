@@ -54,7 +54,11 @@ const handleSubmit = (e: Event) => {
                     placeholder="Your prompt"
                     class="block w-full"
                 />
-                <Button type="submit" :disabled="loading" class="block mt-2 w-full">
+                <Button
+                    type="submit"
+                    :disabled="loading"
+                    class="block mt-2 w-full"
+                >
                     {{ !loading ? "Submit" : "Submitting..." }}
                 </Button>
             </form>

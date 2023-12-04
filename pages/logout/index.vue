@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import clearToken from '@/src/helpers/token/clearToken';
+import clearToken from "@/src/helpers/token/clearToken";
 clearToken();
 const router = useRouter();
 router.push("/login");

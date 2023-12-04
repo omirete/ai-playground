@@ -1,7 +1,7 @@
 import { Dialect, Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
 
-export const dbSSL: boolean = process.env.DB_PRIVATE_KEY !== undefined
+export const dbSSL: boolean = process.env.DB_PRIVATE_KEY !== undefined;
 
 export const sequelizeOpts: Options = {
     username: process.env.DB_USR,
@@ -13,11 +13,22 @@ export const sequelizeOpts: Options = {
     dialectModule: mysql2,
     ssl: dbSSL,
     dialectOptions: {
-        ssl: dbSSL ? {
-            key: (process.env.DB_PRIVATE_KEY as string).replaceAll("\\n", "\n"),
-            cert: (process.env.DB_PUBLIC_KEY as string).replaceAll("\\n", "\n"),
-            ca: (process.env.DB_PUBLIC_KEY as string).replaceAll("\\n", "\n"),
-        } : undefined,
+        ssl: dbSSL
+            ? {
+                  key: (process.env.DB_PRIVATE_KEY as string).replaceAll(
+                      "\\n",
+                      "\n"
+                  ),
+                  cert: (process.env.DB_PUBLIC_KEY as string).replaceAll(
+                      "\\n",
+                      "\n"
+                  ),
+                  ca: (process.env.DB_PUBLIC_KEY as string).replaceAll(
+                      "\\n",
+                      "\n"
+                  ),
+              }
+            : undefined,
     },
 };
 

@@ -1,4 +1,7 @@
-export const authErrorMissingCredentials = { status: 400, text: "Missing email or password." };
+export const authErrorMissingCredentials = {
+    status: 400,
+    text: "Missing email or password.",
+};
 export const authErrorIncorrectCredentials = {
     status: 401,
     text: "Email or password incorrect.",

@@ -1,4 +1,4 @@
-import UserType from "~/src/types/UserType";
+import type UserType from "@/src/types/UserType";
 
 const getUserFromToken = (token: string | null): UserType | undefined => {
     if (token !== null) {

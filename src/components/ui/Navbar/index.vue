@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { MenuItem } from "primevue/menuitem";
+import type { MenuItem } from "primevue/menuitem";
 import TabMenu from "primevue/tabmenu";
 import Sidebar from "primevue/sidebar";
 import Menu from "primevue/menu";
 import { PrimeIcons } from "primevue/api";
-import UserContext from "~/src/contexts/UserContext";
+import UserContext from "@/src/contexts/UserContext";
 
 const showSidebar = ref<boolean>(false);
 const toggleSidebar = () => {

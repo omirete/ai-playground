@@ -1,11 +1,11 @@
 import { compareSync } from "bcrypt";
-import { generateToken } from "~/server/helpers/jwt";
-import User from "~/models/User";
+import { generateToken } from "@/server/helpers/jwt";
+import User from "@/models/User";
 import {
     authErrorIncorrectCredentials,
     authErrorMissingCredentials,
-} from "~/server/errors";
-import responseWithStatus from "~/server/helpers/responseWithStatus";
+} from "@/server/errors";
+import responseWithStatus from "@/server/helpers/responseWithStatus";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);

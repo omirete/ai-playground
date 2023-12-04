@@ -1,8 +1,8 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-import PromptGPT from "~/models/PromptGPT";
-import authenticateRequest from "~/server/helpers/authenticateRequest";
-import responseWithStatus from "~/server/helpers/responseWithStatus";
-import { authErrorUnauthorized } from "~/server/errors";
+import PromptGPT from "@/models/PromptGPT";
+import authenticateRequest from "@/server/helpers/authenticateRequest";
+import responseWithStatus from "@/server/helpers/responseWithStatus";
+import { authErrorUnauthorized } from "@/server/errors";
 
 const CHAT_PRESET: Record<string, ChatCompletionRequestMessage[]> = {
     CatDog: [

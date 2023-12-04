@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import InputText from "primevue/inputtext";
 import InlineMessage from "primevue/inlinemessage";
-import updateToken from "~/src/helpers/token/updateToken";
-import SubmitButton from "~/src/components/ui/SubmitButton/index.vue";
+import updateToken from "@/src/helpers/token/updateToken";
+import SubmitButton from "@/src/components/ui/SubmitButton/index.vue";
 const router = useRouter();
 
 const loading = ref<boolean>(false);

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { provide } from "vue";
 import getUserFromToken from "./helpers/getUserFromToken";
-import UserType from "~/src/types/UserType";
-import UserContext from "~/src/contexts/UserContext";
+import type UserType from "@/src/types/UserType";
+import UserContext from "@/src/contexts/UserContext";
 
 const token = ref<string | null>(null);
 const user = ref<UserType | undefined>(getUserFromToken(token.value));

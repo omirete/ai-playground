@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "~/src/helpers/DB";
-import { MetaFields } from ".";
+import { sequelize } from "@/src/helpers/DB";
+import { type MetaFields } from ".";
 
 export interface PromptGPTFields {
     prompt: string;

@@ -1,4 +1,4 @@
-import tokenUpdated from "~/src/customEvents/tokenUpdated";
+import tokenUpdated from "@/src/customEvents/tokenUpdated";
 
 const updateToken = (newValue: string) => {
     localStorage.setItem("token", newValue);

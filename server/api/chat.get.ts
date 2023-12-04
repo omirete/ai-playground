@@ -1,7 +1,7 @@
-import PromptGPT from "~/models/PromptGPT";
-import authenticateRequest from "~/server/helpers/authenticateRequest";
-import responseWithStatus from "~/server/helpers/responseWithStatus";
-import { authErrorUnauthorized } from "~/server/errors";
+import PromptGPT from "@/models/PromptGPT";
+import authenticateRequest from "@/server/helpers/authenticateRequest";
+import responseWithStatus from "@/server/helpers/responseWithStatus";
+import { authErrorUnauthorized } from "@/server/errors";
 
 export default defineEventHandler(async (event) => {
     const user = authenticateRequest(getHeader(event, "Authorization"));

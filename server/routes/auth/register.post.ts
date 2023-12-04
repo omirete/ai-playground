@@ -1,6 +1,6 @@
 import { hashSync } from "bcrypt";
-import { validatePassword } from "~/src/helpers/password";
-import User from "~/models/User";
+import { validatePassword } from "@/src/helpers/password";
+import User from "@/models/User";
 import responseWithStatus from "../../helpers/responseWithStatus";
 import { authErrorMissingCredentials } from "../../errors";
 

@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
-import PrivateSection from "~/src/components/PrivateSection/index.vue";
+import PrivateSection from "@/src/components/PrivateSection/index.vue";
 
 const loading = ref<boolean>(false);
 const prompt = ref<string>("");

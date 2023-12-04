@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UserContext from "~/src/contexts/UserContext";
+import UserContext from "@/src/contexts/UserContext";
 const user = inject(UserContext);
 const router = useRouter();
 const { onUnauthorized } = defineProps<{

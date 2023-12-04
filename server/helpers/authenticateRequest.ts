@@ -1,4 +1,4 @@
-import UserType from "~/src/types/UserType";
+import type UserType from "@/src/types/UserType";
 import { verifyAndDecodeToken } from "./jwt";
 
 const authenticateRequest = (auth?: string): UserType | undefined => {

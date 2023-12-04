@@ -3,11 +3,11 @@ import { ref } from "vue";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
 import Sidebar from "primevue/sidebar";
-import getImgSrc from "~/src/helpers/getImgSrc";
+import getImgSrc from "@/src/helpers/getImgSrc";
 import GenerationsGallery, {
-    Generation,
-} from "~/src/components/GenerationsGallery/index.vue";
-import PrivateSection from "~/src/components/PrivateSection/index.vue";
+    type Generation,
+} from "@/src/components/GenerationsGallery/index.vue";
+import PrivateSection from "@/src/components/PrivateSection/index.vue";
 
 interface GeneratedImage {
     src: string;

@@ -1,10 +1,10 @@
 import { Configuration, OpenAIApi } from "openai";
-import PromptDALLE from "~/models/PromptDALLE";
-import { dataUrlToFile, uploadBlob } from "~/src/helpers/fileStorage";
+import PromptDALLE from "@/models/PromptDALLE";
+import { dataUrlToFile, uploadBlob } from "@/src/helpers/fileStorage";
 import { randomUUID } from "crypto";
-import authenticateRequest from "~/server/helpers/authenticateRequest";
-import responseWithStatus from "~/server/helpers/responseWithStatus";
-import { authErrorUnauthorized } from "~/server/errors";
+import authenticateRequest from "@/server/helpers/authenticateRequest";
+import responseWithStatus from "@/server/helpers/responseWithStatus";
+import { authErrorUnauthorized } from "@/server/errors";
 
 export default defineEventHandler(async (event) => {
     const user = authenticateRequest(getHeader(event, "Authorization"));

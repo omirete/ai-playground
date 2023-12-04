@@ -1,7 +1,7 @@
-import PromptDALLE from "~/models/PromptDALLE";
-import { authErrorUnauthorized } from "~/server/errors";
-import authenticateRequest from "~/server/helpers/authenticateRequest";
-import responseWithStatus from "~/server/helpers/responseWithStatus";
+import PromptDALLE from "@/models/PromptDALLE";
+import { authErrorUnauthorized } from "@/server/errors";
+import authenticateRequest from "@/server/helpers/authenticateRequest";
+import responseWithStatus from "@/server/helpers/responseWithStatus";
 
 export default defineEventHandler(async (event) => {
     const user = authenticateRequest(getHeader(event, "Authorization"));

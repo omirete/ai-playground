@@ -1,4 +1,4 @@
-import responseWithStatus from "~/server/helpers/responseWithStatus";
+import responseWithStatus from "@/server/helpers/responseWithStatus";
 
 export default defineEventHandler(async (event) => {
     const url = "https://api.openai.com/v1/models";

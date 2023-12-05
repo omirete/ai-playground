@@ -58,17 +58,13 @@ watchEffect(() => {
 </script>
 
 <template>
-    <template class="hidden sm:block">
-        <TabMenu :model="items" class="block" style="min-height: 4rem" />
-    </template>
-    <template class="block sm:hidden">
-        <TabMenu
-            :model="[{ icon: PrimeIcons.BARS, command: toggleSidebar }]"
-            class="block"
-            style="min-height: 4rem"
-        />
-        <Sidebar v-model:visible="showSidebar">
-            <Menu :model="items" class="border-0" />
-        </Sidebar>
-    </template>
+    <TabMenu :model="items" class="hidden sm:block" style="min-height: 4rem" />
+    <TabMenu
+        :model="[{ icon: PrimeIcons.BARS, command: toggleSidebar }]"
+        class="block sm:hidden"
+        style="min-height: 4rem"
+    />
+    <Sidebar v-model:visible="showSidebar">
+        <Menu :model="items" class="border-0" />
+    </Sidebar>
 </template>

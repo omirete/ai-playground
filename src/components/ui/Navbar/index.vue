@@ -15,16 +15,16 @@ const hideSidebar = () => {
 };
 const user = inject(UserContext);
 const baseItems: MenuItem[] = [
-    { label: "Home", to: "/", icon: PrimeIcons.HOME, command: hideSidebar },
+    { label: "Home", url: "/", icon: PrimeIcons.HOME, command: hideSidebar },
     {
         label: "GPT3.5turbo",
-        to: "/chat",
+        url: "/chat",
         icon: PrimeIcons.COMMENT,
         command: hideSidebar,
     },
     {
         label: "DALL-E",
-        to: "/dall-e",
+        url: "/dall-e",
         icon: PrimeIcons.IMAGE,
         command: hideSidebar,
     },
@@ -36,7 +36,7 @@ watchEffect(() => {
             ...baseItems,
             {
                 label: "Logout",
-                to: "/logout",
+                url: "/logout",
                 icon: PrimeIcons.SIGN_OUT,
                 visible: user?.value !== undefined,
                 command: hideSidebar,
@@ -47,7 +47,7 @@ watchEffect(() => {
             ...baseItems,
             {
                 label: "Login",
-                to: "/login",
+                url: "/login",
                 icon: PrimeIcons.SIGN_IN,
                 visible: user?.value === undefined,
                 command: hideSidebar,

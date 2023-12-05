@@ -9,15 +9,15 @@ import responseWithStatus from "@/server/helpers/responseWithStatus";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    if (!body.email || !body.password) {
+    const jsonBody = typeof body === "string" ? JSON.parse(body) : body;
+    if (!jsonBody.email || !jsonBody.password) {
         return responseWithStatus(event, authErrorMissingCredentials);
     }
-    const user = await User.findOne({ where: { email: body.email } });
+    const user = await User.findOne({ where: { email: jsonBody.email } });
     if (user === null) {
         return responseWithStatus(event, authErrorIncorrectCredentials);
     }
-
-    const pwdOk = compareSync(body.password, user.dataValues.pwdHash);
+    const pwdOk = compareSync(jsonBody.password, user.dataValues.pwdHash);
     const token = generateToken(user);
 
     if (pwdOk) {

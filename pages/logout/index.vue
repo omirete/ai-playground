@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import clearToken from "@/src/helpers/token/clearToken";
-clearToken();
-const router = useRouter();
-router.push("/login");
+
+onMounted(() => {
+    clearToken();
+    const router = useRouter();
+    router.push("/login");
+});
 </script>
 
 <template>

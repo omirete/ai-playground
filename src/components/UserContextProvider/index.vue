@@ -14,11 +14,6 @@ const handleTokenUpdated = () => {
 
 onMounted(() => {
     token.value = localStorage.getItem("token");
-    window.addEventListener("tokenUpdated", handleTokenUpdated);
-});
-
-onUnmounted(() => {
-    window.removeEventListener("tokenUpdated", handleTokenUpdated);
 });
 
 watchEffect(() => {

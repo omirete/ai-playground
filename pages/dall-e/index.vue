@@ -37,12 +37,11 @@ const handleSubmit: (e: Event) => void = (e) => {
             const prompt = formData.get("prompt")?.toString();
             if (prompt) {
                 const params = new URLSearchParams({ prompt });
+                const token = localStorage ? localStorage.getItem("token") : "";
                 fetch(`/api/dall-e?${params.toString()}`, {
                     method: "POST",
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem(
-                            "token"
-                        )}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 })
                     .then(async (res) => {
@@ -79,30 +78,28 @@ const handleSubmit: (e: Event) => void = (e) => {
 };
 const getPreviousGenerations: () => void = () => {
     loadingPreviousGenerations.value = true;
-    try {
-        fetch(`/api/dall-e`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
+    const token = localStorage ? localStorage.getItem("token") : "";
+    fetch(`/api/dall-e`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    })
+        .then(async (res) => {
+            const data = await res.json();
+            previousGenerations.value = (data.prompts as Generation[])?.sort(
+                (a, b) =>
+                    new Date(b.createdAt).valueOf() -
+                    new Date(a.createdAt).valueOf()
+            );
         })
-            .then(async (res) => {
-                const data = await res.json();
-                previousGenerations.value = (
-                    data.prompts as Generation[]
-                )?.sort(
-                    (a, b) =>
-                        new Date(b.createdAt).valueOf() -
-                        new Date(a.createdAt).valueOf()
-                );
-            })
-            .finally(() => {
-                loadingPreviousGenerations.value = false;
-            });
-    } catch (error) {
-        console.error(error);
-        loadingPreviousGenerations.value = false;
-    }
+        .finally(() => {
+            loadingPreviousGenerations.value = false;
+        })
+        .catch((error) => {
+            console.error(error);
+            loadingPreviousGenerations.value = false;
+        });
 };
 
 const findPreviousImagesByPrompt = (prompt: string): GeneratedImage[] => {
@@ -111,7 +108,7 @@ const findPreviousImagesByPrompt = (prompt: string): GeneratedImage[] => {
         .map((p) => ({ src: getImgSrc(p.image), alt: prompt }));
 };
 
-watchEffect(() => {
+onMounted(() => {
     getPreviousGenerations();
 });
 const updatePrompt = (newPrompt: string, img_src?: string) => {

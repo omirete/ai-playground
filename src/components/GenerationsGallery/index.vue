@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { type PromptDALLEFields } from "@/models/PromptDALLE";
-import { type MetaFields } from "@/models";
+import type { PromptDALLEFields } from "@/models/PromptDALLE";
+import type { MetaFields } from "@/models";
 import getImgSrc from "@/src/helpers/getImgSrc";
 
 export type Generation = Omit<PromptDALLEFields & MetaFields, "userId">;

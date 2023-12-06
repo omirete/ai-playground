@@ -1,10 +1,10 @@
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import PromptGPT from "@/models/PromptGPT";
 import authenticateRequest from "@/server/helpers/authenticateRequest";
 import responseWithStatus from "@/server/helpers/responseWithStatus";
 import { authErrorUnauthorized } from "@/server/errors";
 
-const CHAT_PRESET: Record<string, ChatCompletionRequestMessage[]> = {
+const CHAT_PRESET: Record<string, OpenAI.ChatCompletionMessageParam[]> = {
     CatDog: [
         {
             role: "system",
@@ -31,37 +31,36 @@ export default defineEventHandler(async (event) => {
         const query = getQuery(event);
         const prompt = query.prompt?.toString();
         if (prompt) {
-            const configuration = new Configuration({
+            const openai = new OpenAI({
                 organization: process.env.OPENAI_ORG_ID,
                 apiKey: process.env.OPENAI_API_SECRET,
             });
-            const openai = new OpenAIApi(configuration);
             const model = "gpt-3.5-turbo";
             const chatPreset = CHAT_PRESET.API;
-            const messages: ChatCompletionRequestMessage[] = [
+            const messages: OpenAI.ChatCompletionMessageParam[] = [
                 ...chatPreset,
                 { role: "user", content: prompt },
             ];
-            const response = await openai.createChatCompletion({
+            const response = await openai.chat.completions.create({
                 model,
                 messages,
                 temperature: 0.2,
             });
-            const answer = response.data.choices[0].message;
+            const answer = response.choices[0].message;
             if (answer?.content) {
+                const systemPrompt = chatPreset[0].content as string;
                 await PromptGPT.create({
                     userId: user.id,
                     prompt,
                     model,
-                    systemPrompt: chatPreset[0].content,
+                    systemPrompt,
                     answer: answer?.content,
                 });
             }
             return responseWithStatus(event, {
-                data: response.data,
+                data: response,
                 answer,
-                status: response.status,
-                text: response.statusText,
+                status: response.choices.length > 0 ? 200 : 500,
             });
         } else {
             return responseWithStatus(event, {

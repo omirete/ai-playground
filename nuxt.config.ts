@@ -20,7 +20,7 @@ export default defineNuxtConfig({
 
         // Public keys that are exposed to the client
         public: {
-            URL_IMG: process.env.URL_IMG,
+            IMG_BASE_URL: process.env.IMG_BASE_URL,
             publicKey: ((process.env.PUBLIC_KEY as string) ?? "").replaceAll(
                 "\\n",
                 "\n"

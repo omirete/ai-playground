@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import PromptDALLE from "@/models/PromptDALLE";
 import { dataUrlToFile, uploadBlob } from "@/src/helpers/fileStorage";
 import { randomUUID } from "crypto";
@@ -12,18 +12,17 @@ export default defineEventHandler(async (event) => {
         const query = getQuery(event);
         const prompt = query.prompt?.toString();
         if (prompt) {
-            const configuration = new Configuration({
+            const openai = new OpenAI({
                 organization: process.env.OPENAI_ORG_ID,
                 apiKey: process.env.OPENAI_API_SECRET,
             });
-            const openai = new OpenAIApi(configuration);
-            const response = await openai.createImage({
+            const response = await openai.images.generate({
                 prompt,
                 n: 2,
                 response_format: "b64_json",
                 size: "256x256",
             });
-            const img_src = response.data.data.map(
+            const img_src = response.data.map(
                 (d) => `data:image/jpeg;base64,${d.b64_json}`
             );
             img_src.forEach((src) => {
@@ -32,7 +31,7 @@ export default defineEventHandler(async (event) => {
                 if (img) {
                     uploadBlob(
                         img,
-                        `${process.env.SFTP_BASE_DIR ?? ""}generated-images`,
+                        process.env.IMG_SAVE_DIR ?? "",
                         filename,
                         false
                     ).then(async (success) => {
@@ -57,8 +56,8 @@ export default defineEventHandler(async (event) => {
             return responseWithStatus(event, {
                 data: response.data,
                 images: img_src,
-                status: response.status,
-                text: response.statusText,
+                status: response.created > 0 ? 200 : 500,
+                text: `Creaded ${response.created} image/s.`,
             });
         } else {
             return responseWithStatus(event, {

@@ -24,3 +24,8 @@ logs
 
 config/config.json
 public/generated-images/*
+
+# Ignore certs
+*.key
+*.pem
+*.pub

@@ -1,4 +1,4 @@
-import { Dialect, Options, Sequelize } from "sequelize";
+import { type Dialect, type Options, Sequelize } from "sequelize";
 import mysql2 from "mysql2";
 
 export const dbSSL: boolean = process.env.DB_PRIVATE_KEY !== undefined;

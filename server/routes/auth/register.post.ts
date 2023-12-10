@@ -6,10 +6,11 @@ import { authErrorMissingCredentials } from "../../errors";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
-    if (!body.email || !body.password || !body.name) {
+    const jsonBody = typeof body === "string" ? JSON.parse(body) : body;
+    if (!jsonBody.email || !jsonBody.password || !jsonBody.name) {
         return responseWithStatus(event, authErrorMissingCredentials);
     }
-    if (!validatePassword(body.password)) {
+    if (!validatePassword(jsonBody.password)) {
         return responseWithStatus(event, {
             status: 400,
             text: "Password not strong enough.",
@@ -17,11 +18,11 @@ export default defineEventHandler(async (event) => {
     }
 
     const saltRounds = 10;
-    const pwdHash = hashSync(body.password, saltRounds);
+    const pwdHash = hashSync(jsonBody.password, saltRounds);
     try {
         const user = await User.create({
-            email: body.email,
-            name: body.name,
+            email: jsonBody.email,
+            name: jsonBody.name,
             pwdHash,
         });
     } catch (error) {

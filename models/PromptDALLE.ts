@@ -4,6 +4,7 @@ import { type MetaFields } from ".";
 
 export interface PromptDALLEFields {
     prompt: string;
+    model: string;
     image: string;
     userId: string;
 }
@@ -22,6 +23,10 @@ PromptDALLE.init(
         prompt: {
             type: DataTypes.STRING(1024),
             allowNull: false,
+        },
+        model: {
+            type: DataTypes.ENUM("dall-e-2", "dall-e-3"),
+            allowNull: true,
         },
         image: {
             type: DataTypes.STRING,

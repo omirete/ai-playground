@@ -7,22 +7,22 @@ module.exports = {
         await queryInterface.changeColumn(
             "PromptsGPT",
             "prompt",
-            DataTypes.TEXT
+            DataTypes.TEXT,
         );
         await queryInterface.changeColumn(
             "PromptsGPT",
             "systemPrompt",
-            DataTypes.TEXT
+            DataTypes.TEXT,
         );
         await queryInterface.changeColumn(
             "PromptsGPT",
             "answer",
-            DataTypes.TEXT
+            DataTypes.TEXT,
         );
         await queryInterface.changeColumn(
             "PromptsDALLE",
             "prompt",
-            DataTypes.STRING(1024)
+            DataTypes.STRING(1024),
         );
     },
     async down(queryInterface, Sequelize) {},

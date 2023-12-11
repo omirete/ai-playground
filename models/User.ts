@@ -48,7 +48,7 @@ User.init(
                 fields: ["email"],
             },
         ],
-    }
+    },
 );
 
 export default User;

@@ -55,7 +55,7 @@ PromptGPT.init(
         sequelize,
         modelName: "PromptGPT",
         tableName: "PromptsGPT",
-    }
+    },
 );
 
 export default PromptGPT;

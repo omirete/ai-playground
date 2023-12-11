@@ -7,7 +7,7 @@ module.exports = {
             "PromptsDALLE",
             { model: "dall-e-2" },
             { model: null },
-            undefined
+            undefined,
         );
     },
     async down(queryInterface, Sequelize) {},

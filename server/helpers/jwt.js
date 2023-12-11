@@ -24,7 +24,7 @@ export const generateToken = (user) => {
         {
             expiresIn: "7d",
             algorithm: "RS256",
-        }
+        },
     );
     return token;
 };

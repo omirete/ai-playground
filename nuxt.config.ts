@@ -15,7 +15,7 @@ export default defineNuxtConfig({
         // apiSecret: '123',
         privateKey: ((process.env.PRIVATE_KEY as string) ?? "").replaceAll(
             "\\n",
-            "\n"
+            "\n",
         ),
 
         // Public keys that are exposed to the client
@@ -23,7 +23,7 @@ export default defineNuxtConfig({
             IMG_BASE_URL: process.env.IMG_BASE_URL,
             publicKey: ((process.env.PUBLIC_KEY as string) ?? "").replaceAll(
                 "\\n",
-                "\n"
+                "\n",
             ),
         },
     },

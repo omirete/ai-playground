@@ -4,7 +4,7 @@ export const uploadBlob = async (
     blob: Blob,
     directory: string,
     filename: string,
-    overwrite: boolean = false
+    overwrite: boolean = false,
 ): Promise<boolean> => {
     try {
         await fs.mkdir(directory, { recursive: true });
@@ -15,7 +15,7 @@ export const uploadBlob = async (
         filepath += filename;
         const result = await fs.writeFile(
             filepath,
-            Buffer.from(await blob.arrayBuffer())
+            Buffer.from(await blob.arrayBuffer()),
         );
         return true; // check
     } catch (err) {
@@ -29,7 +29,7 @@ export const uploadBlob = async (
 
 export const dataUrlToFile = (
     dataUrl: string,
-    filename: string
+    filename: string,
 ): File | undefined => {
     if (dataUrl.startsWith("data:")) {
         const arr = dataUrl.split(",");

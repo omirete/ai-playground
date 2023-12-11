@@ -21,7 +21,7 @@ const handleSubmit = (e: Event) => {
                     method: "POST",
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem(
-                            "token"
+                            "token",
                         )}`,
                     },
                 })

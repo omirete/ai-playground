@@ -14,7 +14,7 @@ const getUserFromToken = (token: string | null): UserType | undefined => {
                             ("00" + c.charCodeAt(0).toString(16)).slice(-2)
                         );
                     })
-                    .join("")
+                    .join(""),
             );
             const payloadObj = JSON.parse(jsonPayload);
             const expirationDate = new Date(payloadObj.exp * 1000);

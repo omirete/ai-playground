@@ -3,6 +3,7 @@ import { ref } from "vue";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
 import Sidebar from "primevue/sidebar";
+import SelectButton from "primevue/selectbutton";
 import getImgSrc from "@/src/helpers/getImgSrc";
 import GenerationsGallery, {
     type Generation,
@@ -15,6 +16,11 @@ interface GeneratedImage {
 }
 
 const prompt = ref<string>("");
+const model = ref<string>("dall-e-2");
+const imageModels = ref([
+    { name: "DALL-E 2", value: "dall-e-2" },
+    { name: "DALL-E 3", value: "dall-e-3" },
+]);
 const loading = ref<boolean>(false);
 const loadingPreviousGenerations = ref<boolean>(false);
 const images = ref<GeneratedImage[]>([]);
@@ -31,45 +37,42 @@ const handleSubmit: (e: Event) => void = (e) => {
     e.preventDefault();
     loading.value = true;
     try {
-        const form = e.target as HTMLFormElement;
-        if (form) {
-            const formData = new FormData(form);
-            const prompt = formData.get("prompt")?.toString();
-            if (prompt) {
-                const params = new URLSearchParams({ prompt });
-                const token = localStorage ? localStorage.getItem("token") : "";
-                fetch(`/api/dall-e?${params.toString()}`, {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                    .then(async (res) => {
-                        const data = await res.json();
-                        images.value = data.images.map((i: string) => ({
-                            src: getImgSrc(i),
-                            alt: prompt,
-                        }));
-                        const now = new Date().toISOString();
-                        data.images.forEach((img: string, i: number) => {
-                            previousGenerations.value = [
-                                {
-                                    createdAt: now,
-                                    id: `temp_${i}_${now}`,
-                                    image: img,
-                                    prompt,
-                                    updatedAt: now,
-                                },
-                                ...previousGenerations.value,
-                            ];
-                        });
-                    })
-                    .finally(() => {
-                        loading.value = false;
+        if (prompt.value) {
+            const params = new URLSearchParams({ prompt: prompt.value });
+            if (model.value) params.set("model", model.value);
+            const token = localStorage ? localStorage.getItem("token") : "";
+            fetch(`/api/dall-e?${params.toString()}`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then(async (res) => {
+                    const data = await res.json();
+                    images.value = data.images.map((i: string) => ({
+                        src: getImgSrc(i),
+                        alt: prompt,
+                    }));
+                    const now = new Date().toISOString();
+                    data.images.forEach((img: string, i: number) => {
+                        previousGenerations.value = [
+                            {
+                                createdAt: now,
+                                id: `temp_${i}_${now}`,
+                                image: img,
+                                prompt: prompt.value,
+                                model: model.value ?? null,
+                                updatedAt: now,
+                            },
+                            ...previousGenerations.value,
+                        ];
                     });
-            } else {
-                loading.value = false;
-            }
+                })
+                .finally(() => {
+                    loading.value = false;
+                });
+        } else {
+            loading.value = false;
         }
     } catch (error) {
         console.error(error);
@@ -90,7 +93,7 @@ const getPreviousGenerations: () => void = () => {
             previousGenerations.value = (data.prompts as Generation[])?.sort(
                 (a, b) =>
                     new Date(b.createdAt).valueOf() -
-                    new Date(a.createdAt).valueOf()
+                    new Date(a.createdAt).valueOf(),
             );
         })
         .finally(() => {
@@ -126,14 +129,22 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
     <PrivateSection>
         <div class="flex flex-1 flex-column sm:flex-row">
             <div class="col-12 sm:col-6 flex flex-column flex-1 gap-2">
-                <form @submit="handleSubmit">
+                <form @submit="handleSubmit" class="flex flex-column">
                     <Textarea
                         name="prompt"
                         v-model="prompt"
                         rows="4"
                         placeholder="Your prompt"
-                        class="block w-full"
+                        class="w-full"
                         required
+                    />
+                    <SelectButton
+                        name="model"
+                        v-model="model"
+                        :options="imageModels"
+                        optionLabel="name"
+                        optionValue="value"
+                        class="mt-2 mx-auto"
                     />
                     <Button
                         type="submit"
@@ -191,9 +202,14 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
                     <div class="flex-1 overflow-auto">
                         <GenerationsGallery
                             :imageGenerations="previousGenerations"
-                            :onSelect="(generation: Generation)=>{
-                                updatePrompt(generation.prompt, getImgSrc(generation.image))
-                            }"
+                            :onSelect="
+                                (generation: Generation) => {
+                                    updatePrompt(
+                                        generation.prompt,
+                                        getImgSrc(generation.image),
+                                    );
+                                }
+                            "
                         />
                     </div>
                 </div>
@@ -210,10 +226,15 @@ const updatePrompt = (newPrompt: string, img_src?: string) => {
                 </template>
                 <GenerationsGallery
                     :imageGenerations="previousGenerations"
-                    :onSelect="(generation: Generation)=>{
-                        updatePrompt(generation.prompt, getImgSrc(generation.image));
-                        hidePreviousGenerations();
-                    }"
+                    :onSelect="
+                        (generation: Generation) => {
+                            updatePrompt(
+                                generation.prompt,
+                                getImgSrc(generation.image),
+                            );
+                            hidePreviousGenerations();
+                        }
+                    "
                 />
             </Sidebar>
         </div>

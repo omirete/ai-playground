@@ -12,18 +12,21 @@ export default defineEventHandler(async (event) => {
         const query = getQuery(event);
         const prompt = query.prompt?.toString();
         if (prompt) {
+            const model = query.model?.toString();
+            const dalle3 = model === "dall-e-3";
             const openai = new OpenAI({
                 organization: process.env.OPENAI_ORG_ID,
                 apiKey: process.env.OPENAI_API_SECRET,
             });
             const response = await openai.images.generate({
                 prompt,
-                n: 2,
+                n: dalle3 ? 1 : 2,
                 response_format: "b64_json",
-                size: "256x256",
+                size: dalle3 ? "1024x1024" : "256x256",
+                model: dalle3 ? "dall-e-3" : "dall-e-2",
             });
             const img_src = response.data.map(
-                (d) => `data:image/jpeg;base64,${d.b64_json}`
+                (d) => `data:image/jpeg;base64,${d.b64_json}`,
             );
             img_src.forEach((src) => {
                 const filename = `${randomUUID()}.jpg`;
@@ -33,23 +36,24 @@ export default defineEventHandler(async (event) => {
                         img,
                         process.env.IMG_SAVE_DIR ?? "",
                         filename,
-                        false
+                        false,
                     ).then(async (success) => {
                         if (success) {
                             await PromptDALLE.create({
                                 userId: user.id,
                                 prompt,
+                                model: dalle3 ? "dall-e-3" : "dall-e-2",
                                 image: filename,
                             });
                         } else {
                             console.error(
-                                "Could not upload img to filestorage."
+                                "Could not upload img to filestorage.",
                             );
                         }
                     });
                 } else {
                     console.error(
-                        "Could not generate an image file to store it."
+                        "Could not generate an image file to store it.",
                     );
                 }
             });

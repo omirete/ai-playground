@@ -4,7 +4,7 @@ import { type MetaFields } from ".";
 
 export interface PromptDALLEFields {
     prompt: string;
-    model: string;
+    model: string | null;
     image: string;
     userId: string;
 }
@@ -54,7 +54,7 @@ PromptDALLE.init(
         sequelize,
         modelName: "PromptDALLE",
         tableName: "PromptsDALLE",
-    }
+    },
 );
 
 export default PromptDALLE;

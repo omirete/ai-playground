@@ -27,7 +27,7 @@ onMounted(() => {
             v-if="onUnauthorized === 'message' || onUnauthorized === undefined"
         >
             You are not authorized to view this content. Please
-            <a href="/login" class="p-button p-component">Log in</a>
+            <NuxtLink to="/login" class="p-button p-component">Log in</NuxtLink>
         </div>
     </template>
 </template>

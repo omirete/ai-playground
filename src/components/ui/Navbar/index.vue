@@ -18,7 +18,7 @@ watchEffect(() => {
     <nav
         class="d-flex flex-row flex-sm-column px-2 py-2 align-items-center bg-secondary shadow-lg"
     >
-        <a class="navbar-brand" href="#">
+        <NuxtLink class="navbar-brand" to="#">
             <img
                 src="/logo_144.jpeg"
                 alt="App logo"
@@ -26,7 +26,7 @@ watchEffect(() => {
                 height="40"
                 class="rounded-circle"
             />
-        </a>
+        </NuxtLink>
         <ul
             class="flex-grow-1 m-0 mt-0 mt-sm-1 ms-1 ms-sm-0 p-0 w-100 d-flex flex-row flex-sm-column"
         >
@@ -51,8 +51,8 @@ watchEffect(() => {
         >
             {{ user.name.substring(0, 1) }}
         </p>
-        <a
-            :href="user ? 'logout' : 'login'"
+        <NuxtLink
+            :to="user ? 'logout' : 'login'"
             class="w-sm-100 bg-primary text-white rounded py-2 px-3 px-sm-0"
         >
             <div
@@ -63,6 +63,6 @@ watchEffect(() => {
                     class="text-inherit"
                 />
             </div>
-        </a>
+        </NuxtLink>
     </nav>
 </template>

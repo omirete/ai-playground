@@ -10,7 +10,7 @@ const props = defineProps<{
 <template>
     <li
         :class="`
-            text-center rounded
+            text-center rounded d-flex
             ${
                 props.href
                     ? $route.fullPath.endsWith(props.href)
@@ -24,12 +24,12 @@ const props = defineProps<{
         style="list-style-type: none"
     >
         <template v-if="props.href">
-            <a
-                class="text-decoration-none px-2 text-inherit"
-                aria-current="page"
-                :href="props.href"
-                ><slot></slot>
-            </a>
+            <NuxtLink
+                class="text-decoration-none text-inherit w-100 h-100"
+                :to="props.href"
+            >
+                <slot></slot>
+            </NuxtLink>
         </template>
         <template v-else>
             <slot></slot>

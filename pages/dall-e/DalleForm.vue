@@ -49,10 +49,10 @@ const handleSubmit: (payload: Event) => void = (e) => {
                                 // Extra
                                 src: getImgSrc(imgSrc),
                                 alt: prompt,
-                            }))
+                            })),
                         );
                         generatedImgsContext?.value?.setActiveImg(
-                            `temp_0_${now}`
+                            `temp_0_${now}`,
                         );
                     })
                     .finally(() => {

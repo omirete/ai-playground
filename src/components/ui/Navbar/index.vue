@@ -18,7 +18,7 @@ watchEffect(() => {
     <nav
         class="d-flex flex-row flex-sm-column px-2 py-2 align-items-center bg-secondary shadow-lg"
     >
-        <NuxtLink class="navbar-brand" to="#">
+        <NuxtLink class="navbar-brand" to="/">
             <img
                 src="/logo_144.jpeg"
                 alt="App logo"

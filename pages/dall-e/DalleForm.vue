@@ -6,9 +6,10 @@ import GeneratedImagesContext from "@/src/contexts/GeneratedImagesContextProvide
 import getImgSrc from "@/src/helpers/getImgSrc";
 const generatedImgsContext = inject(GeneratedImagesContext);
 
-const prompt = ref<string>(
-    generatedImgsContext?.value?.activeImg?.prompt ?? "",
-);
+const prompt = ref<string | undefined>();
+watchEffect(() => {
+    prompt.value = generatedImgsContext?.value?.activeImg?.prompt;
+});
 const DEFAULT_MODEL = "dall-e-2";
 const imageModels: { label: string; value: string }[] = [
     { label: "DALL-E 2", value: "dall-e-2" },
@@ -48,10 +49,10 @@ const handleSubmit: (payload: Event) => void = (e) => {
                                 // Extra
                                 src: getImgSrc(imgSrc),
                                 alt: prompt,
-                            })),
+                            }))
                         );
                         generatedImgsContext?.value?.setActiveImg(
-                            `temp_0_${now}`,
+                            `temp_0_${now}`
                         );
                     })
                     .finally(() => {

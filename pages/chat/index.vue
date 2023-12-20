@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import Textarea from "primevue/textarea";
-import Button from "primevue/button";
 import PrivateSection from "@/src/components/PrivateSection/index.vue";
 
 const loading = ref<boolean>(false);
@@ -45,24 +43,24 @@ const handleSubmit = (e: Event) => {
 
 <template>
     <PrivateSection>
-        <div class="flex flex-wrap">
-            <form @submit="handleSubmit" class="col-12 sm:col-6">
-                <Textarea
+        <div class="d-flex flex-wrap">
+            <form @submit="handleSubmit" class="col-12 col-sm-6">
+                <textarea
                     name="prompt"
                     v-model="prompt"
                     rows="4"
                     placeholder="Your prompt"
-                    class="block w-full"
+                    class="form-control w-100"
                 />
-                <Button
+                <button
                     type="submit"
                     :disabled="loading"
-                    class="block mt-2 w-full"
+                    class="btn btn-primary mt-2 w-100"
                 >
                     {{ !loading ? "Submit" : "Submitting..." }}
-                </Button>
+                </button>
             </form>
-            <div v-if="answer !== ''" class="col-12 sm:col-6">
+            <div v-if="answer !== ''" class="col-12 col-sm-6">
                 <h3>Answer:</h3>
                 <p>{{ answer }}</p>
             </div>

@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import "/node_modules/primeflex/primeflex.css";
+// import "./node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "./custom.scss";
+import "bootstrap-icons/font/bootstrap-icons.css";
 // Primevue Theming
-import "primeicons/primeicons.css";
-import "primevue/resources/themes/lara-light-indigo/theme.css";
-import "primevue/resources/primevue.min.css";
 
-import UserContextProvider from "@/src/components/UserContextProvider/index.vue";
+import UserContextProvider from "@/src/contexts/UserContextProvider/index.vue";
 import Navbar from "@/src/components/ui/Navbar/index.vue";
 </script>
 
 <template>
     <UserContextProvider>
-        <div class="min-h-screen max-h-screen flex flex-column">
+        <div class="d-flex vh-100 flex-column flex-sm-row">
             <Navbar />
-            <div class="px-3 py-2 flex-1 flex flex-column">
+            <div class="px-3 py-2 d-flex flex-column flex-grow-1">
                 <NuxtPage />
             </div>
         </div>
@@ -22,8 +21,5 @@ import Navbar from "@/src/components/ui/Navbar/index.vue";
 
 <style>
 body {
-    font-family: var(--font-family);
-    padding: 0;
-    margin: 0;
 }
 </style>

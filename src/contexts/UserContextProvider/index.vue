@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { provide } from "vue";
+import { provide, ref, onMounted, watchEffect } from "vue";
 import getUserFromToken from "./helpers/getUserFromToken";
 import type UserType from "@/src/types/UserType";
-import UserContext from "@/src/contexts/UserContext";
+import UserContext from "./UserContext";
 
 const token = ref<string | null>(null);
-const user = ref<UserType | undefined>(getUserFromToken(token.value));
+const user = ref<UserType | undefined>();
 const loggedIn = ref<boolean>(false);
 
 const handleTokenUpdated = () => {

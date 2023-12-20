@@ -57,12 +57,13 @@ export default defineEventHandler(async (event) => {
                     );
                 }
             });
-            return responseWithStatus(event, {
+            const responseData = {
                 data: response.data,
                 images: img_src,
                 status: response.created > 0 ? 200 : 500,
-                text: `Creaded ${response.created} image/s.`,
-            });
+                text: `Created ${response.created} image/s.`,
+            };
+            return responseWithStatus(event, responseData);
         } else {
             return responseWithStatus(event, {
                 status: 400,

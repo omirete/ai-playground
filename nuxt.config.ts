@@ -1,14 +1,21 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     css: [
-        "/node_modules/primeflex/primeflex.css",
-        "primeicons/primeicons.css",
-        "primevue/resources/themes/saga-blue/theme.css",
-        "primevue/resources/primevue.min.css",
+        // "/node_modules/primeflex/primeflex.css",
+        // "primeicons/primeicons.css",
+        // "primevue/resources/themes/saga-blue/theme.css",
+        // "primevue/resources/primevue.min.css",
+        "~/node_modules/bootstrap/dist/css/bootstrap.min.css",
     ],
     build: {
-        transpile: ["primevue"],
+        // transpile: ["primevue"],
     },
+    // plugins: [
+    //     {
+    //         src: "~/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+    //         mode: "client",
+    //     },
+    // ],
     devtools: { enabled: true },
     runtimeConfig: {
         // Private keys are only available on the server

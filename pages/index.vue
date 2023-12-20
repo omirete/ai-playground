@@ -1,5 +1,6 @@
 <script setup lang="ts"></script>
 
 <template>
-    <div>Home!</div>
+    test
+    <slot></slot>
 </template>

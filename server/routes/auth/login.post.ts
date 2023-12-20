@@ -18,10 +18,10 @@ export default defineEventHandler(async (event) => {
         return responseWithStatus(event, authErrorIncorrectCredentials);
     }
     const pwdOk = compareSync(jsonBody.password, user.dataValues.pwdHash);
-    const token = generateToken(user);
 
     if (pwdOk) {
-        return responseWithStatus(event, { status: 200, token: token });
+        const token = generateToken(user);
+        return responseWithStatus(event, { status: 200, token });
     } else {
         return responseWithStatus(event, authErrorIncorrectCredentials);
     }

@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import Button from "primevue/button";
-import ProgressSpinner from "primevue/progressspinner";
-const { loading, text } = defineProps<{ loading: boolean; text: string }>();
+const props = defineProps<{ loading: boolean; text: string }>();
 </script>
 
 <template>
-    <Button type="submit" :disabled="loading">
-        <div class="flex gap-2 align-items-center">
-            <span>{{ text }}</span>
-            <ProgressSpinner
-                v-if="loading"
-                style="height: 1em; width: 1em"
-                stroke-width="10"
-                aria-label="Loading"
-            />
-        </div>
-    </Button>
+    <button type="submit" :disabled="props.loading">
+        <span>{{ props.text }}</span>
+        <span
+            v-if="props.loading"
+            class="spinner-border spinner-border-sm ms-1"
+            role="status"
+        ></span>
+    </button>
 </template>

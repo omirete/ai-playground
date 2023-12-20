@@ -14,10 +14,17 @@ export const generateToken = (user) => {
     const config = useRuntimeConfig();
     // sign with RSA SHA256
     const privateKey = config.privateKey;
+    const userData = user.dataValues;
     const token = jwt.sign(
         {
             data: {
-                user: user.dataValues, // User from sequelize model
+                user: {
+                    id: userData.id,
+                    email: userData.email,
+                    name: userData.name,
+                    createdAt: userData.createdAt,
+                    updatedAt: userData.updatedAt,
+                }, // User from sequelize model
             },
         },
         privateKey,

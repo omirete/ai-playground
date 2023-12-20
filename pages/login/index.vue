@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import InputText from "primevue/inputtext";
-import InlineMessage from "primevue/inlinemessage";
 import updateToken from "@/src/helpers/token/updateToken";
 import SubmitButton from "@/src/components/ui/SubmitButton/index.vue";
 const router = useRouter();
@@ -47,39 +45,46 @@ const submitHandler = (e: Event): void => {
 </script>
 
 <template>
-    <div class="flex justify-content-center">
+    <div class="d-flex justify-content-center align-items-center h-100">
         <form
             @submit="submitHandler"
             :class="`
-                col-12 sm:col-10 md:col-6 lg:col-4
-                border-1 border-round shadow-1 surface-border
-                flex flex-column gap-2
+                col-12 col-sm-10 col-md-6 col-lg-4
+                border rounded shadow-sm p-2
+                d-flex flex-column gap-2
+                bg-white
             `"
         >
-            <div class="flex flex-column gap-2">
+            <div class="d-flex flex-column gap-2">
                 <label for="email">Email</label>
-                <InputText
+                <input
                     required
                     id="email"
                     type="text"
                     name="email"
+                    class="form-control"
                     placeholder="Email"
                 />
             </div>
-            <div class="flex flex-column gap-2">
+            <div class="d-flex flex-column gap-2">
                 <label for="password">Password</label>
-                <InputText
+                <input
                     required
                     id="password"
                     type="password"
                     name="password"
+                    class="form-control"
                     placeholder="Password"
                 />
             </div>
-            <SubmitButton :loading="loading" text="Login" />
-            <InlineMessage v-if="loginError !== undefined" severity="error">
+            <SubmitButton
+                :loading="loading"
+                text="Login"
+                class="btn btn-primary mt-2"
+            />
+            <div v-if="loginError !== undefined" class="text-danger">
                 {{ loginError }}
-            </InlineMessage>
+            </div>
         </form>
     </div>
 </template>

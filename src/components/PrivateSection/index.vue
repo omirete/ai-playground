@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UserContext from "@/src/contexts/UserContext";
+import UserContext from "@/src/contexts/UserContextProvider/UserContext";
 const user = inject(UserContext);
 const { onUnauthorized } = defineProps<{
     onUnauthorized?: "message" | "redirect" | "hide";

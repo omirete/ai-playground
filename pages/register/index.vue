@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import InputText from "primevue/inputtext";
-import Button from "primevue/button";
 const submitHandler = (e: Event): void => {
     e.preventDefault();
     const form = e.target;
@@ -34,49 +32,52 @@ const submitHandler = (e: Event): void => {
 </script>
 
 <template>
-    <div class="flex justify-content-center">
+    <div class="d-flex justify-content-center">
         <form
             @submit="submitHandler"
             :class="`
-                col-12 sm:col-10 md:col-6 lg:col-4
-                border-1 border-round shadow-1 surface-border
-                flex flex-column gap-2
+                col-12 col-sm-10 col-md-6 col-lg-4
+                border-1 rounded shadow-sm surface-border
+                d-flex flex-column gap-2
             `"
         >
-            <div class="flex flex-column gap-2">
+            <div class="d-flex flex-column gap-2">
                 <label for="name">Name</label>
-                <InputText
+                <input
                     required
                     id="name"
                     type="text"
                     name="name"
+                    class="form-control"
                     placeholder="Name"
                 />
             </div>
-            <div class="flex flex-column gap-2">
+            <div class="d-flex flex-column gap-2">
                 <label for="email">Email</label>
-                <InputText
+                <input
                     required
                     id="email"
                     type="text"
                     name="email"
+                    class="form-control"
                     placeholder="Email"
                 />
             </div>
-            <div class="flex flex-column gap-2">
+            <div class="d-flex flex-column gap-2">
                 <label for="password">Password</label>
-                <InputText
+                <input
                     required
                     id="password"
                     type="password"
                     name="password"
+                    class="form-control"
                     placeholder="Password"
                     pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$"
                     title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
                     minlength="8"
                 />
             </div>
-            <Button type="submit">Register</Button>
+            <button type="submit" class="btn btn-primary">Register</button>
         </form>
     </div>
 </template>

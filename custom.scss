@@ -1,0 +1,79 @@
+// Functions first
+@import "../node_modules/bootstrap/scss/functions";
+
+$white: #ffffff;
+
+$theme-colors: (
+    "light": #eef0fe,
+    "dark": #060200,
+    "primary": #26428a,
+    "secondary": #b34a73,
+    "info": #eca2c0,
+    "success": #29a766,
+    "warning": #e3cc29,
+    "danger": #f12315,
+);
+
+// Required Bootstrap imports
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/variables-dark";
+@import "../node_modules/bootstrap/scss/maps";
+@import "../node_modules/bootstrap/scss/mixins";
+@import "../node_modules/bootstrap/scss/root";
+
+// Optional components
+@import "../node_modules/bootstrap/scss/utilities";
+@import "../node_modules/bootstrap/scss/reboot";
+@import "../node_modules/bootstrap/scss/containers";
+@import "../node_modules/bootstrap/scss/grid";
+@import "../node_modules/bootstrap/scss/helpers";
+
+$utilities: map-merge(
+    $utilities,
+    (
+        "cursor": (
+            property: cursor,
+            class: cursor,
+            responsive: true,
+            values: auto pointer grab,
+        ),
+        "background-color":
+            map-merge(
+                map-get($utilities, "background-color"),
+                (
+                    state: hover,
+                )
+            ),
+        "shadow":
+            map-merge(
+                map-get($utilities, "shadow"),
+                (
+                    state: hover,
+                )
+            ),
+        "width":
+            map-merge(
+                map-get($utilities, "width"),
+                (
+                    state: hover,
+                    responsive: true,
+                )
+            ),
+        "color":
+            map-merge(
+                map-get($utilities, "color"),
+                (
+                    state: hover,
+                    values:
+                        map-merge(
+                            $utilities-text-colors,
+                            (
+                                "inherit": inherit,
+                            )
+                        ),
+                )
+            ),
+    )
+);
+
+@import "../node_modules/bootstrap/scss/utilities/api";

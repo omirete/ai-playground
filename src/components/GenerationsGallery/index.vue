@@ -1,41 +1,39 @@
 <script setup lang="ts">
-import type { PromptDALLEFields } from "@/models/PromptDALLE";
-import type { MetaFields } from "@/models";
 import getImgSrc from "@/src/helpers/getImgSrc";
-
-export type Generation = Omit<PromptDALLEFields & MetaFields, "userId">;
+import Icon from "@/src/components/ui/Icon/index.vue";
+import type GeneratedImage from "@/src/types/GeneratedImage";
 
 const { imageGenerations, onSelect } = defineProps<{
-    imageGenerations: Generation[];
-    onSelect: (generation: Generation) => void;
+    imageGenerations: GeneratedImage[];
+    onSelect: (generation: GeneratedImage) => void;
 }>();
 </script>
 
 <template>
     <div
-        v-for="item in imageGenerations"
-        class="flex align-items-start p-3 gap-4 hover:surface-100 cursor-pointer"
-        @click="() => onSelect(item)"
+        v-for="image in imageGenerations"
+        class="d-flex align-items-start p-1 m-0 mt-2 me-2 bg-light-hover rounded cursor-pointer"
+        @click="() => onSelect(image)"
     >
         <img
-            class="shadow-2 block border-round"
-            :src="getImgSrc(item.image)"
-            :alt="item.prompt"
+            class="shadow-sm rounded"
+            :src="getImgSrc(image.image)"
+            :alt="image.prompt"
             width="80"
             height="80"
             loading="lazy"
         />
-        <div class="flex-1 flex flex-column gap-3">
-            <div class="text-900">
-                {{ item.prompt }}
+        <div class="flex-grow-1 d-flex flex-column ms-2">
+            <div class="text-dark">
+                {{ image.prompt }}
             </div>
-            <div class="flex align-items-center gap-2">
-                <i class="pi pi-calendar"></i>
-                <span class="">{{
-                    new Date(item.createdAt).toLocaleDateString(undefined, {
+            <div class="d-flex align-items-center text-black-50">
+                <Icon icon-name="calendar" />
+                <span class="ms-1">{{
+                    new Date(image.createdAt).toLocaleDateString(undefined, {
                         year: "numeric",
-                        month: "long",
-                        day: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
                     })
                 }}</span>
             </div>

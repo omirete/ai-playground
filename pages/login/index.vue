@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import updateToken from "@/src/helpers/token/updateToken";
 import SubmitButton from "@/src/components/ui/SubmitButton/index.vue";
+import UserContext from "@/src/contexts/UserContextProvider/UserContext";
 const router = useRouter();
 
 const loading = ref<boolean>(false);
 const loginError = ref<string | undefined>(undefined);
+
+const userContext = inject(UserContext);
 
 const submitHandler = (e: Event): void => {
     e.preventDefault();
@@ -25,8 +27,13 @@ const submitHandler = (e: Event): void => {
                 .then(async (res) => {
                     if (res.status === 200) {
                         const token = (await res.json()).token;
-                        updateToken(token);
-                        router.push("/");
+                        if (userContext) {
+                            userContext.updateToken(token);
+                            router.push("/");
+                        } else {
+                            loginError.value =
+                                "Could not log in properly. Please try again later.";
+                        }
                     } else {
                         loginError.value = (await res.json()).text;
                     }

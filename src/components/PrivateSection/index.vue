@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import UserContext from "@/src/contexts/UserContextProvider/UserContext";
-const user = inject(UserContext);
+import type UserType from "@/src/types/UserType";
 const { onUnauthorized } = defineProps<{
     onUnauthorized?: "message" | "redirect" | "hide";
 }>();
+const userContext = inject(UserContext);
+
+const user = ref<UserType | undefined>();
+watchEffect(() => {
+    user.value = userContext?.user.value;
+});
+
 onMounted(() => {
-    if (user?.value === undefined && onUnauthorized === "redirect") {
+    if (user.value === undefined && onUnauthorized === "redirect") {
         // redirect to login
         const router = useRouter();
         router.push("/login");

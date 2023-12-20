@@ -2,10 +2,16 @@
 import UserContext from "@/src/contexts/UserContextProvider/UserContext";
 import NavItem from "./NavItem.vue";
 import Icon from "@/src/components/ui/Icon/index.vue";
+import type UserType from "@/src/types/UserType";
 
-const user = inject(UserContext);
+const userContext = inject(UserContext);
 const iconClasses = "text-info-hover text-white fs-3";
 const iconClassesActive = "shadow bg-white-hover bg-info";
+
+const user = ref<UserType | undefined>();
+watchEffect(() => {
+    user.value = userContext?.user.value;
+});
 </script>
 
 <template>

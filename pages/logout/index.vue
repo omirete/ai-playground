@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import clearToken from "@/src/helpers/token/clearToken";
+import UserContext from "@/src/contexts/UserContextProvider/UserContext";
 
-onMounted(() => {
-    clearToken();
-    const router = useRouter();
-    router.push("/login");
+const userContext = inject(UserContext);
+
+watchEffect(() => {
+    if (userContext && typeof window !== "undefined") {
+        userContext.clearToken();
+        const router = useRouter();
+        router.push("/login");
+    }
 });
 </script>
 

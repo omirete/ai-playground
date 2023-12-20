@@ -13,7 +13,7 @@ const handleTokenUpdated = () => {
 };
 
 onMounted(() => {
-    token.value = localStorage.getItem("token");
+    handleTokenUpdated();
 });
 
 watchEffect(() => {
@@ -21,7 +21,21 @@ watchEffect(() => {
     loggedIn.value = user.value !== undefined;
 });
 
-provide(UserContext, user);
+const updateToken = (newToken: string) => {
+    localStorage.setItem("token", newToken);
+    handleTokenUpdated();
+};
+
+const clearToken = () => {
+    localStorage.removeItem("token");
+    handleTokenUpdated();
+};
+
+provide(UserContext, {
+    user,
+    updateToken,
+    clearToken,
+});
 </script>
 
 <template>

@@ -1,10 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    css: [
-        "~/node_modules/bootstrap/dist/css/bootstrap.min.css",
-    ],
+    css: ["~/node_modules/bootstrap/dist/css/bootstrap.min.css"],
     routeRules: {
-        '/': { redirect: '/dall-e' }
+        "/": { redirect: "/dall-e" },
     },
     devtools: { enabled: false },
     runtimeConfig: {

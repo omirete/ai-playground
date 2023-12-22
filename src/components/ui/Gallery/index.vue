@@ -17,19 +17,42 @@ watchEffect(() => {
         (img) => img.id === props.defaultImgId,
     );
 });
+
+const showPrompt = ref<boolean>(false);
+const togglePrompt = () => {
+    showPrompt.value = !showPrompt.value;
+};
 </script>
 
 <template>
     <div
         class="d-flex flex-column p-2 align-items-center justify-content-center"
     >
-        <div>
+        <div
+            class="position-relative cursor-pointer"
+            style="max-height: 40vh; max-width: 80vw"
+            @click="togglePrompt"
+        >
+            <div
+                :class="`
+                    position-absolute mw-100 mh-100
+                    overflow-auto p-2 rounded
+                    bg-dark bg-opacity-75 text-white
+                    ${showPrompt ? '' : 'd-none'}
+                `"
+            >
+                <p class="m-0 lh-sm">
+                    <small>{{
+                        activeImg?.revisedPrompt ?? activeImg?.prompt
+                    }}</small>
+                </p>
+                <button type="button" @click=""></button>
+            </div>
             <img
                 v-if="activeImg"
                 :src="getImgSrc(activeImg.image)"
                 :alt="activeImg.prompt"
-                style="max-height: 40vh; max-width: 80vw"
-                class="rounded shadow"
+                class="mw-100 mh-100 rounded shadow"
             />
             <div v-else>
                 <p class="text-muted">Nothing to show.</p>

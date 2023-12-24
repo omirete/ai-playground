@@ -8,6 +8,7 @@ export interface PromptDALLEFields {
     model: string | null;
     image: string;
     userId: string;
+    variationOf: string | null;
 }
 
 class PromptDALLE extends Model<
@@ -53,6 +54,14 @@ PromptDALLE.init(
             allowNull: false,
             references: {
                 model: "Users",
+                key: "id",
+            },
+        },
+        variationOf: {
+            type: DataTypes.UUID,
+            allowNull: true,
+            references: {
+                model: "PromptsDALLE",
                 key: "id",
             },
         },

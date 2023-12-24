@@ -35,7 +35,7 @@ const togglePrompt = () => {
         >
             <div
                 :class="`
-                    position-absolute mw-100 mh-100
+                    position-absolute
                     overflow-auto p-2 mx-2 rounded
                     bg-dark bg-opacity-75 text-white
                     ${showPrompt ? '' : 'd-none'}
@@ -43,9 +43,6 @@ const togglePrompt = () => {
             >
                 <p class="m-0 lh-sm">
                     <!-- lh-sm = line height small -->
-                    <small>{{
-                        activeImg?.revisedPrompt ?? activeImg?.prompt
-                    }}</small>
                 </p>
             </div>
             <div
@@ -56,6 +53,7 @@ const togglePrompt = () => {
                     :src="getImgSrc(activeImg.image)"
                     :alt="activeImg.prompt"
                     class="img-fluid mw-100 mh-100 rounded shadow"
+                    style="width: 200px; height: 200px"
                 />
                 <div v-else>
                     <p class="text-muted">Nothing to show.</p>

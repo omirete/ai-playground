@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// import "./node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./custom.scss";
 import "bootstrap-icons/font/bootstrap-icons.css";
 // Primevue Theming
@@ -10,9 +9,9 @@ import Navbar from "@/src/components/ui/Navbar/index.vue";
 
 <template>
     <UserContextProvider>
-        <div class="d-flex vh-100 flex-column flex-sm-row">
+        <div class="d-flex min-vh-100 min-vw-100 flex-column flex-sm-row">
             <Navbar />
-            <div class="px-3 py-2 d-flex flex-column flex-grow-1">
+            <div class="p-2 d-flex flex-column flex-grow-1">
                 <NuxtPage />
             </div>
         </div>

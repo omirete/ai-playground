@@ -73,6 +73,56 @@ $utilities: map-merge(
                         ),
                 )
             ),
+        "viewport-width": (
+            property: width,
+            class: vw,
+            values: (
+                25: 25vw,
+                50: 50vw,
+                75: 75vw,
+                100: 100vw,
+            ),
+        ),
+        "min-viewport-width": (
+            property: min-width,
+            class: min-vw,
+            values: (
+                25: 25vw,
+                50: 50vw,
+                75: 75vw,
+                100: 100vw,
+            ),
+        ),
+        "max-viewport-width": (
+            property: max-width,
+            class: max-vw,
+            values: (
+                25: 25vw,
+                50: 50vw,
+                75: 75vw,
+                100: 100vw,
+            ),
+        ),
+        "max-width": (
+            property: max-width,
+            class: mw,
+            values: (
+                25: 25vw,
+                50: 50vw,
+                75: 75vw,
+                100: 100vw,
+            ),
+        ),
+        "viewport-height": (
+            property: height,
+            class: vh,
+            values: (
+                25: 25vw,
+                50: 50vw,
+                75: 75vw,
+                100: 100vw,
+            ),
+        ),
     )
 );
 

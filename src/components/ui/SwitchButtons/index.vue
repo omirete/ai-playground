@@ -17,7 +17,7 @@ watchEffect(() => {
     <div class="input-group d-flex justify-content-center flex-nowrap">
         <template v-for="option in props.options">
             <label
-                :class="`btn btn-outline-secondary w-100 ${
+                :class="`btn btn-outline-secondary form-control px-1 ${
                     selectedValue === option.value ? 'active' : ''
                 }`"
                 @click="() => handler(option.value)"

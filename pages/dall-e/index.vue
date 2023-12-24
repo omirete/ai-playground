@@ -11,16 +11,18 @@ import GalleryPrevious from "./GalleryPrevious.vue";
 <template>
     <PrivateSection>
         <GeneratedImagesContextProvider>
-            <div class="d-flex flex-grow-1 flex-column flex-sm-row">
-                <div class="d-flex flex-column col-12 col-sm-7 flex-grow-1">
-                    <div
-                        class="d-flex flex-column flex-grow-1 align-items-center justify-content-center w-100 mb-2 border rounded"
-                    >
+            <div class="d-flex flex-column flex-md-row flex-grow-1">
+                <div class="d-flex flex-column flex-grow-1">
+                    <div class="d-flex flex-grow-1">
                         <Preview />
                     </div>
-                    <DalleForm />
+                    <div class="overflow-hidden">
+                        <DalleForm />
+                    </div>
                 </div>
-                <GalleryPrevious />
+                <div class="col-md-5">
+                    <GalleryPrevious />
+                </div>
             </div>
         </GeneratedImagesContextProvider>
     </PrivateSection>

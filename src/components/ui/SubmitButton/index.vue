@@ -1,9 +1,18 @@
 <script setup lang="ts">
-const props = defineProps<{ loading: boolean; text: string }>();
+const props = defineProps<{
+    loading: boolean;
+    text: string;
+    type?: "button" | "submit" | "reset";
+    class?: string;
+}>();
 </script>
 
 <template>
-    <button type="submit" :disabled="props.loading">
+    <button
+        :type="props.type"
+        :disabled="props.loading"
+        :class="`text-nowrap ${props.class ?? ''}`"
+    >
         <span>{{ props.text }}</span>
         <span
             v-if="props.loading"

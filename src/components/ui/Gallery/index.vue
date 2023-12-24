@@ -26,64 +26,59 @@ const togglePrompt = () => {
 
 <template>
     <div
-        class="d-flex flex-column p-2 align-items-center justify-content-center"
+        class="d-flex flex-column align-items-center justify-content-center border rounded mb-2 flex-grow-1"
     >
         <div
-            class="position-relative cursor-pointer"
+            class="position-relative d-flex cursor-pointer"
             style="max-height: 40vh; max-width: 80vw"
             @click="togglePrompt"
         >
             <div
                 :class="`
                     position-absolute mw-100 mh-100
-                    overflow-auto p-2 rounded
+                    overflow-auto p-2 mx-2 rounded
                     bg-dark bg-opacity-75 text-white
                     ${showPrompt ? '' : 'd-none'}
                 `"
             >
                 <p class="m-0 lh-sm">
+                    <!-- lh-sm = line height small -->
                     <small>{{
                         activeImg?.revisedPrompt ?? activeImg?.prompt
                     }}</small>
                 </p>
-                <button type="button" @click=""></button>
             </div>
-            <img
-                v-if="activeImg"
-                :src="getImgSrc(activeImg.image)"
-                :alt="activeImg.prompt"
-                class="mw-100 mh-100 rounded shadow"
-            />
-            <div v-else>
-                <p class="text-muted">Nothing to show.</p>
+            <div
+                class="d-flex flex-grow-1 align-items-center justify-content-center"
+            >
+                <img
+                    v-if="activeImg"
+                    :src="getImgSrc(activeImg.image)"
+                    :alt="activeImg.prompt"
+                    class="img-fluid mw-100 mh-100 rounded shadow"
+                />
+                <div v-else>
+                    <p class="text-muted">Nothing to show.</p>
+                </div>
             </div>
         </div>
+
         <div
-            :class="`
-                d-flex flex-wrap
-                mt-3
-            `"
+            class="mt-2 ps-1 d-flex flex-nowrap overflow-auto"
+            style="max-width: calc((60px + 0.75rem) * 4 + 0.25rem)"
         >
             <div
-                v-for="(image, i) in images"
+                v-for="image in images"
                 :class="`
-                rounded p-1
-                ${
-                    activeImg?.id === image.id
-                        ? 'bg-info mx-1'
-                        : 'bg-light-hover'
-                }
-            `"
+                    p-1 rounded me-1
+                    ${activeImg?.id === image.id ? 'bg-info' : 'bg-light-hover'}
+                `"
             >
                 <img
                     :src="getImgSrc(image.image)"
                     :alt="image.prompt"
-                    style="max-height: 55px; max-width: 55px"
-                    :class="`
-                        rounded shadow
-                        p-0
-                        cursor-pointer
-                    `"
+                    class="rounded shadow-sm cursor-pointer"
+                    style="width: 60px; height: auto"
                     @click="
                         () => {
                             if (props.onClick) props.onClick(image);

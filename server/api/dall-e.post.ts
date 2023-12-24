@@ -5,6 +5,14 @@ import { randomUUID } from "crypto";
 import authenticateRequest from "@/server/helpers/authenticateRequest";
 import responseWithStatus from "@/server/helpers/responseWithStatus";
 import { authErrorUnauthorized } from "@/server/errors";
+import GeneratedImage from "@/src/types/GeneratedImage";
+
+export interface DallEPostReturn {
+    data: GeneratedImage[];
+    images: string[];
+    status: number;
+    text: string;
+}
 
 export default defineEventHandler(async (event) => {
     const user = authenticateRequest(getHeader(event, "Authorization"));
@@ -26,41 +34,44 @@ export default defineEventHandler(async (event) => {
                 model: dalle3 ? "dall-e-3" : "dall-e-2",
             });
             const imageSrcs: string[] = [];
-            response.data.forEach((d) => {
+            const generatedImagesPromise = response.data.map(async (d) => {
                 const src = `data:image/jpeg;base64,${d.b64_json}`;
                 imageSrcs.push(src);
                 const revisedPrompt = d.revised_prompt;
                 const filename = `${randomUUID()}.jpg`;
                 const img = dataUrlToFile(src, filename);
                 if (img) {
-                    uploadBlob(
+                    const success = await uploadBlob(
                         img,
                         process.env.IMG_SAVE_DIR ?? "",
                         filename,
                         false,
-                    ).then(async (success) => {
-                        if (success) {
-                            await PromptDALLE.create({
-                                userId: user.id,
-                                prompt,
-                                revisedPrompt,
-                                model: dalle3 ? "dall-e-3" : "dall-e-2",
-                                image: filename,
-                            });
-                        } else {
-                            console.error(
-                                "Could not upload img to filestorage.",
-                            );
-                        }
-                    });
+                    );
+
+                    if (success) {
+                        return PromptDALLE.create({
+                            userId: user.id,
+                            prompt,
+                            revisedPrompt,
+                            model: dalle3 ? "dall-e-3" : "dall-e-2",
+                            image: filename,
+                        });
+                    } else {
+                        console.error("Could not upload img to filestorage.");
+                        return Promise.resolve(undefined);
+                    }
                 } else {
                     console.error(
                         "Could not generate an image file to store it.",
                     );
+                    return Promise.resolve(undefined);
                 }
             });
+            const generatedImages = await Promise.all(generatedImagesPromise);
             const responseData = {
-                data: response.data,
+                data: generatedImages
+                    .map((x) => x?.dataValues)
+                    .filter((x) => x !== undefined),
                 images: imageSrcs,
                 status: response.created > 0 ? 200 : 500,
                 text: `Created ${response.created} image/s.`,

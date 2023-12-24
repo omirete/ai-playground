@@ -3,7 +3,7 @@ import SwitchButtons from "@/src/components/ui/SwitchButtons/index.vue";
 import SubmitButton from "@/src/components/ui/SubmitButton/index.vue";
 import { inject } from "vue";
 import GeneratedImagesContext from "@/src/contexts/GeneratedImagesContextProvider/GeneratedImagesContext";
-import getImgSrc from "@/src/helpers/getImgSrc";
+import type { DallEPostReturn } from "@/server/api/dall-e.post";
 const generatedImgsContext = inject(GeneratedImagesContext);
 
 const prompt = ref<string | undefined>();
@@ -16,7 +16,9 @@ const imageModels: { label: string; value: string }[] = [
     { label: "DALL-E 3", value: "dall-e-3" },
 ];
 const loading = ref<boolean>(false);
-const handleSubmit: (payload: Event) => void = (e) => {
+const loadingVariations = ref<boolean>(false);
+
+const handleCreate: (payload: Event) => void = (e) => {
     e.preventDefault();
     loading.value = true;
     const form = e.target as HTMLFormElement;
@@ -36,23 +38,13 @@ const handleSubmit: (payload: Event) => void = (e) => {
                     },
                 })
                     .then(async (res) => {
-                        const data = await res.json();
+                        const responseJson: DallEPostReturn = await res.json();
                         const now = new Date().toISOString();
                         generatedImgsContext?.value?.addImages(
-                            data.images.map((imgSrc: string, i: number) => ({
-                                createdAt: now,
-                                id: `temp_${i}_${now}`,
-                                image: imgSrc,
-                                prompt,
-                                model: model ?? null,
-                                updatedAt: now,
-                                // Extra
-                                src: getImgSrc(imgSrc),
-                                alt: prompt,
-                            })),
+                            responseJson.data,
                         );
                         generatedImgsContext?.value?.setActiveImg(
-                            `temp_0_${now}`,
+                            responseJson.data[0].id,
                         );
                     })
                     .finally(() => {
@@ -67,33 +59,81 @@ const handleSubmit: (payload: Event) => void = (e) => {
         }
     } else {
         console.error("Could not parse form.");
+        loading.value = false;
+    }
+};
+const handleVariation: () => void = () => {
+    loadingVariations.value = true;
+    const originalImg = generatedImgsContext?.value?.activeImg;
+    if (originalImg) {
+        const promptId = originalImg.id;
+        try {
+            const params = new URLSearchParams({ promptId });
+            const model = "dall-e-2"; // Only dall-e-2 supported for now.
+            if (model) params.set("model", model);
+            const token = localStorage ? localStorage.getItem("token") : "";
+            fetch(`/api/dall-e/variations?${params.toString()}`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then(async (res) => {
+                    const responseJson: DallEPostReturn = await res.json();
+                    generatedImgsContext?.value?.addImages(responseJson.data);
+                    generatedImgsContext?.value?.setActiveImg(
+                        responseJson.data[0].id,
+                    );
+                })
+                .finally(() => {
+                    loadingVariations.value = false;
+                });
+        } catch (error) {
+            console.error(error);
+            loadingVariations.value = false;
+        }
+    } else {
+        console.error("Could not parse form.");
+        loadingVariations.value = false;
     }
 };
 </script>
 <template>
-    <form @submit="handleSubmit" class="d-flex flex-column">
+    <form @submit="handleCreate" class="">
         <textarea
             name="prompt"
             v-model="prompt"
-            rows="4"
+            rows="3"
             placeholder="Your prompt"
-            class="form-control w-100"
+            class="form-control"
             required
         ></textarea>
-        <div class="d-flex flex-row">
-            <SwitchButtons
-                name="model"
-                :options="imageModels"
-                :defaultValue="
-                    generatedImgsContext?.activeImg?.model ?? DEFAULT_MODEL
-                "
-                class="mt-2 mx-auto"
-            />
-            <SubmitButton
-                :loading="loading"
-                class="btn btn-success mt-2 col-4 ms-2"
-                :text="loading ? 'Submitting' : 'Submit'"
-            />
+        <div class="row mt-2 gx-2">
+            <div class="col-12 col-sm-6 mb-2 mb-sm-0">
+                <SwitchButtons
+                    name="model"
+                    :options="imageModels"
+                    :defaultValue="
+                        generatedImgsContext?.activeImg?.model ?? DEFAULT_MODEL
+                    "
+                />
+            </div>
+            <div class="col-6 col-sm-3">
+                <SubmitButton
+                    :loading="loading"
+                    class="btn btn-success form-control"
+                    :text="loading ? 'Submitting' : 'Submit'"
+                />
+            </div>
+            <div class="col-6 col-sm-3">
+                <SubmitButton
+                    type="button"
+                    class="btn btn-warning form-control"
+                    :text="loadingVariations ? 'Variating' : 'Variation'"
+                    :loading="loadingVariations"
+                    @click="handleVariation"
+                />
+            </div>
         </div>
     </form>
 </template>

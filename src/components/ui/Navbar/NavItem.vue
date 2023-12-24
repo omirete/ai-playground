@@ -10,7 +10,7 @@ const props = defineProps<{
 <template>
     <li
         :class="`
-            text-center rounded d-flex
+            text-center rounded d-flex px-2
             ${
                 props.href
                     ? $route.fullPath.endsWith(props.href)

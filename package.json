@@ -8,6 +8,7 @@
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
         "migrate": "npx sequelize-cli db:migrate",
+        "migrate-undo-last": "npx sequelize-cli db:migrate:undo",
         "prettier": "npx prettier --write ."
     },
     "devDependencies": {

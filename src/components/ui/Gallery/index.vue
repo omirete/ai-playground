@@ -35,15 +35,20 @@ const togglePrompt = () => {
         >
             <div
                 :class="`
-                    position-absolute
-                    overflow-auto p-2 mx-2 rounded
+                    position-absolute ratio ratio-1x1 h-100
+                    overflow-hidden rounded
                     bg-dark bg-opacity-75 text-white
                     ${showPrompt ? '' : 'd-none'}
                 `"
             >
-                <p class="m-0 lh-sm">
-                    <!-- lh-sm = line height small -->
-                </p>
+                <div class="px-2 py-1 overflow-auto">
+                    <p class="m-0 p-0 lh-sm">
+                        <!-- lh-sm = line height small -->
+                        <small>
+                            {{ activeImg?.revisedPrompt ?? activeImg?.prompt }}
+                        </small>
+                    </p>
+                </div>
             </div>
             <div
                 class="d-flex flex-grow-1 align-items-center justify-content-center"

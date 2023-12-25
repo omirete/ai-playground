@@ -67,7 +67,7 @@ const togglePrompt = () => {
         </div>
 
         <div
-            class="mt-2 ps-1 d-flex flex-nowrap overflow-auto"
+            class="mt-2 ps-1 pb-1 d-flex flex-nowrap overflow-auto"
             style="max-width: calc((60px + 0.75rem) * 4 + 0.25rem)"
         >
             <div

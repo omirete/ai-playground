@@ -3,6 +3,10 @@
 # Load configuration from .env file
 source ~/ai-playground/.env
 
+# Ensure backup directories exist
+mkdir -p "$DB_BACKUP_DIR/daily"
+mkdir -p "$DB_BACKUP_DIR/monthly"
+
 # Configuration
 MAX_DAYS=7
 MAX_MONTHS=3

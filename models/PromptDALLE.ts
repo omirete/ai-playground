@@ -39,7 +39,7 @@ PromptDALLE.init(
         image: {
             type: DataTypes.STRING,
             allowNull: false,
-            comment: "URL that points to the image.",
+            comment: "Filename used for the image.",
         },
         createdAt: {
             type: DataTypes.DATE,

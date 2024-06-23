@@ -4,14 +4,19 @@ import SubmitButton from "@/src/components/ui/SubmitButton/index.vue";
 import { inject } from "vue";
 import GeneratedImagesContext from "@/src/contexts/GeneratedImagesContextProvider/GeneratedImagesContext";
 import type { DallEPostReturn } from "@/server/api/dall-e.post";
+import { supportedResolutions } from "@/src/types/dalle/supportedResolutions";
+import type { DalleModels } from "@/src/types/dalle/models";
 const generatedImgsContext = inject(GeneratedImagesContext);
 
 const prompt = ref<string | undefined>();
+const DEFAULT_MODEL = "dall-e-3";
+const model = ref<DalleModels>(DEFAULT_MODEL);
 watchEffect(() => {
-    prompt.value = generatedImgsContext?.value?.activeImg?.prompt;
+    const activeImg = generatedImgsContext?.value?.activeImg;
+    prompt.value = activeImg?.prompt;
+    model.value = activeImg?.model ?? DEFAULT_MODEL;
 });
-const DEFAULT_MODEL = "dall-e-2";
-const imageModels: { label: string; value: string }[] = [
+const imageModels: { label: string; value: DalleModels }[] = [
     { label: "DALL-E 2", value: "dall-e-2" },
     { label: "DALL-E 3", value: "dall-e-3" },
 ];
@@ -26,10 +31,13 @@ const handleCreate: (payload: Event) => void = (e) => {
         const formData = new FormData(form);
         try {
             const prompt = formData.get("prompt")?.toString();
+            const resolution = formData.get("resolution")?.toString();
             const model = formData.get("model")?.toString();
             if (prompt) {
                 const params = new URLSearchParams({ prompt });
                 if (model) params.set("model", model);
+                if (resolution) params.set("resolution", resolution);
+                console.log(resolution);
                 const token = localStorage ? localStorage.getItem("token") : "";
                 fetch(`/api/dall-e?${params.toString()}`, {
                     method: "POST",
@@ -41,10 +49,10 @@ const handleCreate: (payload: Event) => void = (e) => {
                         const responseJson: DallEPostReturn = await res.json();
                         const now = new Date().toISOString();
                         generatedImgsContext?.value?.addImages(
-                            responseJson.data,
+                            responseJson.data
                         );
                         generatedImgsContext?.value?.setActiveImg(
-                            responseJson.data[0].id,
+                            responseJson.data[0].id
                         );
                     })
                     .finally(() => {
@@ -82,7 +90,7 @@ const handleVariation: () => void = () => {
                     const responseJson: DallEPostReturn = await res.json();
                     generatedImgsContext?.value?.addImages(responseJson.data);
                     generatedImgsContext?.value?.setActiveImg(
-                        responseJson.data[0].id,
+                        responseJson.data[0].id
                     );
                 })
                 .finally(() => {
@@ -99,7 +107,7 @@ const handleVariation: () => void = () => {
 };
 </script>
 <template>
-    <form @submit="handleCreate" class="">
+    <form @submit="handleCreate">
         <textarea
             name="prompt"
             v-model="prompt"
@@ -108,15 +116,27 @@ const handleVariation: () => void = () => {
             class="form-control"
             required
         ></textarea>
-        <div class="row mt-2 gx-2">
-            <div class="col-12 col-sm-6 mb-2 mb-sm-0">
+        <div class="mt-2 row gx-2">
+            <div class="col-6 col-sm-3 mb-2 mb-sm-0">
                 <SwitchButtons
                     name="model"
                     :options="imageModels"
-                    :defaultValue="
-                        generatedImgsContext?.activeImg?.model ?? DEFAULT_MODEL
-                    "
+                    v-model="model"
                 />
+            </div>
+            <div class="col-6 col-sm-3 mb-2 mb-sm-0">
+                <select
+                    class="form-select"
+                    aria-label="Default select example"
+                    name="resolution"
+                >
+                    <option
+                        v-for="res in supportedResolutions[model]"
+                        :value="res"
+                    >
+                        {{ res }}
+                    </option>
+                </select>
             </div>
             <div class="col-6 col-sm-3">
                 <SubmitButton

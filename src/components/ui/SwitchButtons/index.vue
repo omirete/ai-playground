@@ -1,21 +1,39 @@
 <script setup lang="ts">
+import { ref, watch, defineEmits } from "vue";
+
+interface Option<T> {
+    label: string;
+    value: T;
+}
+
 const props = defineProps<{
     name: string;
-    options: { label: string; value: string }[];
-    defaultValue?: string;
+    options: Option<string>[];
+    modelValue?: string;
 }>();
-const selectedValue = ref<string | undefined>(props.defaultValue);
+
+const emits = defineEmits(["update:modelValue"]);
+
+const selectedValue = ref<string>(props.modelValue ?? props.options[0].value);
+
 const handler = (newValue: string) => {
     selectedValue.value = newValue;
+    emits("update:modelValue", newValue);
 };
-watchEffect(() => {
-    selectedValue.value = props.defaultValue;
-});
+
+watch(
+    () => props.modelValue,
+    (newValue) => {
+        if (newValue !== undefined) {
+            selectedValue.value = newValue;
+        }
+    }
+);
 </script>
 
 <template>
     <div class="input-group d-flex justify-content-center flex-nowrap">
-        <template v-for="option in props.options">
+        <template v-for="option in props.options" :key="option.value">
             <label
                 :class="`btn btn-outline-secondary form-control px-1 ${
                     selectedValue === option.value ? 'active' : ''

@@ -1,11 +1,13 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "@/src/helpers/DB";
 import { type MetaFields } from ".";
+import type { DalleModels } from "@/src/types/dalle/models";
 
 export interface PromptDALLEFields {
     prompt: string;
     revisedPrompt: string | null;
-    model: string | null;
+    model: DalleModels | null;
+    resolution: string;
     image: string;
     userId: string;
     variationOf: string | null;
@@ -35,6 +37,10 @@ PromptDALLE.init(
         model: {
             type: DataTypes.ENUM("dall-e-2", "dall-e-3"),
             allowNull: true,
+        },
+        resolution: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         image: {
             type: DataTypes.STRING,
